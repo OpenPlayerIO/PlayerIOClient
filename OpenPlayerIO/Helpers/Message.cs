@@ -15,6 +15,10 @@ namespace PlayerIOClient
     /// </summary>
     public class Message : IEnumerable<object>
     {
+        private readonly List<Tuple<object, MessageType>> Values = new List<Tuple<object, MessageType>>();
+        public string Type { get; private set; } = "";
+        public int Count => Values.Count();
+
         /// <summary> Creates a new Message. </summary>
         /// <param name="type"> The type of message to create. </param>
         /// <param name="parameters"> A list of the data to add to the message. </param>
@@ -24,16 +28,11 @@ namespace PlayerIOClient
             Add(parameters);
         }
 
-        public string Type { get; private set; }
-        private readonly List<Tuple<object, MessageType>> _parameters = new List<Tuple<object, MessageType>>();
-
-        public int Count => _parameters.Count;
-
         #region Get
 
         public object Item(uint index)
         {
-            return _parameters[(int)index].Item1;
+            return Values[(int)index].Item1;
         }
 
         [IndexerName("index")]
@@ -117,23 +116,23 @@ namespace PlayerIOClient
                 throw new ArgumentNullException(ParameterNullText);
             }
             if (obj is string) {
-                _parameters.Add(Tuple.Create(obj, MessageType.String));
+                Values.Add(Tuple.Create(obj, MessageType.String));
             } else if (obj is int) {
-                _parameters.Add(Tuple.Create(obj, MessageType.Integer));
+                Values.Add(Tuple.Create(obj, MessageType.Integer));
             } else if (obj is bool) {
-                _parameters.Add(Tuple.Create(obj, MessageType.Boolean));
+                Values.Add(Tuple.Create(obj, MessageType.Boolean));
             } else if (obj is float) {
-                _parameters.Add(Tuple.Create(obj, MessageType.Float));
+                Values.Add(Tuple.Create(obj, MessageType.Float));
             } else if (obj is double) {
-                _parameters.Add(Tuple.Create(obj, MessageType.Double));
+                Values.Add(Tuple.Create(obj, MessageType.Double));
             } else if (obj is byte[]) {
-                _parameters.Add(Tuple.Create(obj, MessageType.ByteArray));
+                Values.Add(Tuple.Create(obj, MessageType.ByteArray));
             } else if (obj is uint) {
-                _parameters.Add(Tuple.Create(obj, MessageType.UInteger));
+                Values.Add(Tuple.Create(obj, MessageType.UInteger));
             } else if (obj is long) {
-                _parameters.Add(Tuple.Create(obj, MessageType.Long));
+                Values.Add(Tuple.Create(obj, MessageType.Long));
             } else if (obj is ulong) {
-                _parameters.Add(Tuple.Create(obj, MessageType.ULong));
+                Values.Add(Tuple.Create(obj, MessageType.ULong));
             } else {
                 throw new InvalidOperationException(
                     "Player.IO Messages only support objects of types: String, Integer, Boolean, Float, Double, Byte[], UInteger, Long & ULong." + Environment.NewLine +
@@ -155,27 +154,27 @@ namespace PlayerIOClient
             if (parameter == null) {
                 throw new ArgumentNullException("parameter", ParameterNullText);
             }
-            _parameters.Add(Tuple.Create((object)parameter, MessageType.String));
+            Values.Add(Tuple.Create((object)parameter, MessageType.String));
         }
 
         public void Add(int parameter)
         {
-            _parameters.Add(Tuple.Create((object)parameter, MessageType.Integer));
+            Values.Add(Tuple.Create((object)parameter, MessageType.Integer));
         }
 
         public void Add(uint parameter)
         {
-            _parameters.Add(Tuple.Create((object)parameter, MessageType.UInteger));
+            Values.Add(Tuple.Create((object)parameter, MessageType.UInteger));
         }
 
         public void Add(long parameter)
         {
-            _parameters.Add(Tuple.Create((object)parameter, MessageType.Long));
+            Values.Add(Tuple.Create((object)parameter, MessageType.Long));
         }
 
         public void Add(ulong parameter)
         {
-            _parameters.Add(Tuple.Create((object)parameter, MessageType.ULong));
+            Values.Add(Tuple.Create((object)parameter, MessageType.ULong));
         }
 
         public void Add(byte[] parameter)
@@ -183,22 +182,22 @@ namespace PlayerIOClient
             if (parameter == null) {
                 throw new ArgumentNullException("parameter", ParameterNullText);
             }
-            _parameters.Add(Tuple.Create((object)parameter, MessageType.ByteArray));
+            Values.Add(Tuple.Create((object)parameter, MessageType.ByteArray));
         }
 
         public void Add(float parameter)
         {
-            _parameters.Add(Tuple.Create((object)parameter, MessageType.Float));
+            Values.Add(Tuple.Create((object)parameter, MessageType.Float));
         }
 
         public void Add(double parameter)
         {
-            _parameters.Add(Tuple.Create((object)parameter, MessageType.Double));
+            Values.Add(Tuple.Create((object)parameter, MessageType.Double));
         }
 
         public void Add(bool parameter)
         {
-            _parameters.Add(Tuple.Create((object)parameter, MessageType.Boolean));
+            Values.Add(Tuple.Create((object)parameter, MessageType.Boolean));
         }
 
         #endregion Separate methods for allowed object types
@@ -210,8 +209,8 @@ namespace PlayerIOClient
             var sb = new StringBuilder("");
             sb.AppendLine(string.Concat("  msg.Type= ", Type, ", ", Count, " entries"));
 
-            for (int i = 0; i < _parameters.Count; i++) {
-                sb.AppendLine(string.Concat("  msg[", i, "] = ", _parameters[i].Item1, "  (", _parameters[i].Item2, ")"));
+            for (int i = 0; i < Values.Count; i++) {
+                sb.AppendLine(string.Concat("  msg[", i, "] = ", Values[i].Item1, "  (", Values[i].Item2, ")"));
             }
 
             return sb.ToString();
@@ -221,7 +220,7 @@ namespace PlayerIOClient
 
         public IEnumerator<object> GetEnumerator()
         {
-            return _parameters.Select(t => t.Item1).GetEnumerator();
+            return Values.Select(t => t.Item1).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

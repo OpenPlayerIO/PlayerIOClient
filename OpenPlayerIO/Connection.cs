@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using System.Threading;
 using PlayerIOClient.Error;
 using PlayerIOClient.Helpers;
 
@@ -34,7 +33,7 @@ namespace PlayerIOClient
         private readonly ServerEndpoint _endpoint;
         private readonly Socket _socket;
         private readonly Stream _stream;
-        private readonly Thread _receiveThread;
+        private readonly BinaryDeserializer _deserializer;
         private readonly byte[] _receiveBuffer = new byte[65536];
         private readonly string _joinKey;
 
@@ -53,7 +52,7 @@ namespace PlayerIOClient
             _socket.Send(new[] { (byte)Enums.ProtocolType.Binary });
             _socket.Send(new Message("join", joinKey).Serialize());
 
-            OnMessage = (sender, message) => {
+            OnMessage += (sender, message) => {
                 if (message.Type == "playerio.joinresult") {
                     if (!message.GetBoolean(0)) {
                         throw new PlayerIOError((ErrorCode)message.GetInteger(1), message.GetString(2));
@@ -63,23 +62,26 @@ namespace PlayerIOClient
                 }
             };
 
-            _receiveThread = new Thread(() => {
-                while (true) {
-                    int receivedBytes = _stream.Read(_receiveBuffer, 0, _receiveBuffer.Length);
+            _deserializer = new BinaryDeserializer(this);
+            _stream.BeginRead(_receiveBuffer, 0, _receiveBuffer.Length, new AsyncCallback(ReceiveCallback), null);
+        }
 
-                    if (receivedBytes == 0) {
-                        this.Terminate(ErrorCode.GeneralError, new Exception("Connection unexpectedly terminated. (receivedBytes == 0)"));
-                    }
+        private void ReceiveCallback(IAsyncResult ar)
+        {
+            var length = _stream.EndRead(ar);
+            var received = _receiveBuffer.Take(length).ToArray();
 
-                    var messages = new BinaryDeserializer().Deserialize(_receiveBuffer.ToList().Take(receivedBytes).ToArray());
-                    foreach (var message in messages) {
-                        OnMessage?.Invoke(this, message);
-                    }
-                }
-            });
+            if (length == 0) {
+                this.Terminate(ErrorCode.GeneralError, new Exception("Connection unexpectedly terminated. (receivedBytes == 0)"));
+            }
 
-            _receiveThread.IsBackground = true;
-            _receiveThread.Start();
+            _deserializer.AddBytes(received);
+            _stream.BeginRead(_receiveBuffer, 0, _receiveBuffer.Length, new AsyncCallback(ReceiveCallback), null);
+        }
+
+        internal void OnMessageReceived(Message message)
+        {
+            OnMessage(this, message);
         }
 
         public void Disconnect()
@@ -92,7 +94,6 @@ namespace PlayerIOClient
             _stream.Close();
             _socket.Disconnect(false);
             _socket.Close();
-            _receiveThread.Abort(exception);
 
             this.Connected = false;
 
