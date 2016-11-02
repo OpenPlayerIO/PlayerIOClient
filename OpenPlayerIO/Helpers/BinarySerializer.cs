@@ -34,46 +34,56 @@ namespace PlayerIOClient.Helpers
         DOES_NOT_EXIST = 0xFF
     }
 
+    internal enum State
+    {
+        Init,
+        Header,
+        Data
+    }
+
+    internal delegate void MessageDeserializedEventHandler(Message e);
+    internal delegate void ValueDeserializedEventHandler(object value);
+
     internal class BinaryDeserializer
     {
-        private enum State { Init, Header, Data }
-        private State _status = State.Init;
-        private Pattern _pattern = Pattern.DOES_NOT_EXIST;
+        public event MessageDeserializedEventHandler OnDeserializedMessage;
+        private event ValueDeserializedEventHandler OnDeserializedValue;
 
-        private MemoryStream _buffer = new MemoryStream();
-        private Connection _sender;
+        private State State = State.Init;
+        private Pattern Pattern = Pattern.DOES_NOT_EXIST;
+
+        private MemoryStream _buffer;
         private Message _message;
 
         private int _length;
-        private int _partLength = 0;
+        private int _partLength;
 
-        public BinaryDeserializer(Connection sender)
+        public BinaryDeserializer()
         {
-            _sender = sender;
-
+            _buffer = new MemoryStream();
             _message = null;
             _length = -1;
-        }
+            _partLength = 0;
 
-        private void OnValueDeserialized(object value)
-        {
-            if (_length == -1)
-                _length = (int)value;
-            else {
-                if (_message == null)
-                    _message = new Message((string)value);
-                else
-                    _message.Add(value);
+            OnDeserializedValue += (value) => {
+                if (_length == -1)
+                    _length = (int)value;
+                else {
+                    if (_message == null)
+                        _message = new Message((string)value);
+                    else
+                        _message.Add(value);
 
-                if (_length == _message.Count) {
-                    _sender.OnMessageReceived(_message);
+                    if (_length == _message.Count) {
+                        OnDeserializedMessage?.Invoke(_message);
 
-                    _message = null;
-                    _length = -1;
+                        _message = null;
+                        _length = -1;
+                    }
                 }
-            }
 
-            _status = State.Init;
+                State = State.Init;
+            };
         }
 
         public void AddByte(byte input) => DeserializeValue(input);
@@ -86,114 +96,102 @@ namespace PlayerIOClient.Helpers
 
         private void DeserializeValue(byte value)
         {
-            switch (_status) {
+            switch (State) {
 
                 #region State.Init
 
                 case State.Init:
-                    var pattern = value.RetrieveFlagPattern();
+                    Pattern = value.RetrieveFlagPattern();
 
-                    switch (pattern) {
+                    switch (Pattern) {
                         case Pattern.STRING_SHORT_PATTERN:
-                            _pattern = pattern;
-                            _partLength = value.RetrievePartLength(pattern);
+                            _partLength = value.RetrievePartLength(Pattern);
 
                             if (_partLength > 0)
-                                _status = State.Data;
+                                State = State.Data;
                             else
-                                OnValueDeserialized("");
+                                OnDeserializedValue("");
                             break;
 
                         case Pattern.STRING_PATTERN:
-                            _pattern = pattern;
-                            _partLength = value.RetrievePartLength(pattern) + 1;
+                            _partLength = value.RetrievePartLength(Pattern) + 1;
 
-                            _status = State.Header;
+                            State = State.Header;
                             break;
 
                         case Pattern.BYTE_ARRAY_SHORT_PATTERN:
-                            _pattern = pattern;
-                            _partLength = value.RetrievePartLength(pattern);
+                            _partLength = value.RetrievePartLength(Pattern);
 
                             if (_partLength > 0)
-                                _status = State.Data;
+                                State = State.Data;
                             else
-                                OnValueDeserialized(new byte[] { });
+                                OnDeserializedValue(new byte[] { });
                             break;
 
                         case Pattern.BYTE_ARRAY_PATTERN:
-                            _pattern = pattern;
-                            _partLength = value.RetrievePartLength(pattern) + 1;
+                            _partLength = value.RetrievePartLength(Pattern) + 1;
 
-                            _status = State.Header;
+                            State = State.Header;
                             break;
 
                         case Pattern.UNSIGNED_INT_SHORT_PATTERN:
-                            OnValueDeserialized(value.RetrievePartLength(pattern));
+                            OnDeserializedValue(value.RetrievePartLength(Pattern));
                             break;
 
                         case Pattern.UNSIGNED_INT_PATTERN:
-                            _pattern = pattern;
-                            _partLength = value.RetrievePartLength(pattern) + 1;
+                            _partLength = value.RetrievePartLength(Pattern) + 1;
 
-                            _status = State.Data;
+                            State = State.Data;
                             break;
 
                         case Pattern.INT_PATTERN:
-                            _pattern = pattern;
-                            _partLength = value.RetrievePartLength(pattern) + 1;
+                            _partLength = value.RetrievePartLength(Pattern) + 1;
 
-                            _status = State.Data;
+                            State = State.Data;
                             break;
 
                         case Pattern.UNSIGNED_LONG_SHORT_PATTERN:
-                            _pattern = pattern;
                             _partLength = 1;
 
-                            _status = State.Data;
+                            State = State.Data;
                             break;
 
                         case Pattern.UNSIGNED_LONG_PATTERN:
-                            _pattern = pattern;
                             _partLength = 6;
 
-                            _status = State.Data;
+                            State = State.Data;
                             break;
 
                         case Pattern.LONG_SHORT_PATTERN:
-                            _pattern = pattern;
                             _partLength = 1;
 
-                            _status = State.Data;
+                            State = State.Data;
                             break;
 
                         case Pattern.LONG_PATTERN:
-                            _pattern = pattern;
                             _partLength = 6;
 
-                            _status = State.Data;
+                            State = State.Data;
                             break;
 
                         case Pattern.DOUBLE_PATTERN:
-                            _pattern = pattern;
                             _partLength = 8;
 
-                            _status = State.Data;
+                            State = State.Data;
                             break;
 
                         case Pattern.FLOAT_PATTERN:
-                            _pattern = pattern;
                             _partLength = 4;
 
-                            _status = State.Data;
+                            State = State.Data;
                             break;
 
                         case Pattern.BOOLEAN_TRUE_PATTERN:
-                            OnValueDeserialized(true);
+                            OnDeserializedValue(true);
                             break;
 
                         case Pattern.BOOLEAN_FALSE_PATTERN:
-                            OnValueDeserialized(false);
+                            OnDeserializedValue(false);
                             break;
                     }
                     break;
@@ -210,7 +208,7 @@ namespace PlayerIOClient.Helpers
                         var length = new List<byte>(4) { 0, 0, 0, 0 }.Select((b, index) => index <= _partLength - 1 ? buffer[index] : (byte)0);
 
                         _partLength = BitConverter.ToInt32(length.ToArray(), 0);
-                        _status = State.Data;
+                        State = State.Data;
 
                         _buffer.Position = 0;
                     }
@@ -229,40 +227,40 @@ namespace PlayerIOClient.Helpers
 
                         Array.Reverse(buffer, 0, _partLength);
 
-                        switch (_pattern) {
+                        switch (Pattern) {
                             case Pattern.STRING_SHORT_PATTERN:
                             case Pattern.STRING_PATTERN:
-                                OnValueDeserialized(Encoding.UTF8.GetString(_buffer.ToArray()));
+                                OnDeserializedValue(Encoding.UTF8.GetString(_buffer.ToArray()));
                                 break;
 
                             case Pattern.UNSIGNED_INT_PATTERN:
-                                OnValueDeserialized(BitConverter.ToUInt32(length.ToArray(), 0));
+                                OnDeserializedValue(BitConverter.ToUInt32(length.ToArray(), 0));
                                 break;
 
                             case Pattern.INT_PATTERN:
-                                OnValueDeserialized(BitConverter.ToInt32(length.ToArray(), 0));
+                                OnDeserializedValue(BitConverter.ToInt32(length.ToArray(), 0));
                                 break;
 
                             case Pattern.UNSIGNED_LONG_SHORT_PATTERN:
                             case Pattern.UNSIGNED_LONG_PATTERN:
-                                OnValueDeserialized(BitConverter.ToUInt64(length.ToArray(), 0));
+                                OnDeserializedValue(BitConverter.ToUInt64(length.ToArray(), 0));
                                 break;
 
                             case Pattern.LONG_SHORT_PATTERN:
                             case Pattern.LONG_PATTERN:
-                                OnValueDeserialized(BitConverter.ToInt64(length.ToArray(), 0));
+                                OnDeserializedValue(BitConverter.ToInt64(length.ToArray(), 0));
                                 break;
 
                             case Pattern.DOUBLE_PATTERN:
-                                OnValueDeserialized(BitConverter.ToDouble(length.ToArray(), 0));
+                                OnDeserializedValue(BitConverter.ToDouble(length.ToArray(), 0));
                                 break;
 
                             case Pattern.FLOAT_PATTERN:
-                                OnValueDeserialized(BitConverter.ToSingle(length.ToArray(), 0));
+                                OnDeserializedValue(BitConverter.ToSingle(length.ToArray(), 0));
                                 break;
 
                             case Pattern.BYTE_ARRAY_PATTERN:
-                                OnValueDeserialized(_buffer.ToArray());
+                                OnDeserializedValue(_buffer.ToArray());
                                 break;
                         }
 
@@ -294,7 +292,7 @@ namespace PlayerIOClient.Helpers
 
     internal class BinarySerializer
     {
-        private static MemoryStream _buffer = new MemoryStream();
+        private static MemoryStream Buffer = new MemoryStream();
 
         public byte[] Serialize(Message message)
         {
@@ -304,7 +302,7 @@ namespace PlayerIOClient.Helpers
             foreach (var value in message)
                 SerializeValue(value);
 
-            return _buffer.ToArray();
+            return Buffer.ToArray();
         }
 
         private void SerializeValue(object value)
@@ -365,7 +363,7 @@ namespace PlayerIOClient.Helpers
                     var bytes = LittleEndianToNetworkOrderBitConverter.GetBytes(length);
                     WriteBottomPatternAndBytes(bottomPattern, bytes);
                 } else {
-                    _buffer.WriteByte((byte)((int)topPattern | length));
+                    Buffer.WriteByte((byte)((int)topPattern | length));
                 }
             }
 
@@ -373,8 +371,8 @@ namespace PlayerIOClient.Helpers
             {
                 var counter = bytes[0] != 0 ? 3 : bytes[1] != 0 ? 2 : bytes[2] != 0 ? 1 : 0;
 
-                _buffer.WriteByte((byte)((int)pattern | counter));
-                _buffer.Write(bytes, bytes.Length - counter - 1, counter + 1);
+                Buffer.WriteByte((byte)((int)pattern | counter));
+                Buffer.Write(bytes, bytes.Length - counter - 1, counter + 1);
             }
 
             internal static void WriteLongPattern(Pattern shortPattern, Pattern longPattern, byte[] bytes)
@@ -388,23 +386,23 @@ namespace PlayerIOClient.Helpers
                 }
 
                 if (counter > 3)
-                    _buffer.WriteByte((byte)((byte)longPattern | counter - 4));
+                    Buffer.WriteByte((byte)((byte)longPattern | counter - 4));
                 else
-                    _buffer.WriteByte((byte)((byte)shortPattern | counter));
+                    Buffer.WriteByte((byte)((byte)shortPattern | counter));
 
-                _buffer.Write(bytes, bytes.Length - counter - 1, counter + 1);
+                Buffer.Write(bytes, bytes.Length - counter - 1, counter + 1);
             }
 
             internal static void Write(Pattern pattern) => Write((byte)pattern);
 
             internal static void Write(byte value)
             {
-                _buffer.WriteByte(value);
+                Buffer.WriteByte(value);
             }
 
             internal static void Write(byte[] value)
             {
-                _buffer.Write(value, 0, value.Length);
+                Buffer.Write(value, 0, value.Length);
             }
         }
     }

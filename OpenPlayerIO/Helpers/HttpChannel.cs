@@ -99,7 +99,7 @@ namespace PlayerIOClient.Helpers
         public void SetToken(string token) => _headers = new Dictionary<string, string>() { ["playertoken"] = token };
     }
 
-    public static class StreamExtensions
+    internal static class StreamExtensions
     {
         public static byte[] ReadAllBytes(this Stream instream)
         {

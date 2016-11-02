@@ -19,9 +19,7 @@ namespace PlayerIOClient
     /// <summary> A connection to a running Player.IO multiplayer room. </summary>
     public class Connection
     {
-        /// <summary>
-        /// Determines if the connection is currently connected to a remote host or not.
-        /// </summary>
+        /// <summary> Determines if the connection is currently connected to a remote host or not. </summary>
         public bool Connected { get; private set; }
 
         /// <summary> Event fired everytime a message is received. </summary>
@@ -34,10 +32,13 @@ namespace PlayerIOClient
         private readonly Socket _socket;
         private readonly Stream _stream;
         private readonly BinaryDeserializer _deserializer;
-        private readonly byte[] _receiveBuffer = new byte[65536];
+
+        private readonly byte[] _buffer = new byte[65536];
         private readonly string _joinKey;
 
         public void Send(string type, params object[] parameters) => _socket.Send(new BinarySerializer().Serialize(new Message(type, parameters)));
+
+        public void Disconnect() => Terminate(ErrorCode.GeneralError, new Exception("Connection forcefully closed by client."));
 
         public Connection(ServerEndpoint endpoint, string joinKey)
         {
@@ -62,31 +63,22 @@ namespace PlayerIOClient
                 }
             };
 
-            _deserializer = new BinaryDeserializer(this);
-            _stream.BeginRead(_receiveBuffer, 0, _receiveBuffer.Length, new AsyncCallback(ReceiveCallback), null);
+            _deserializer = new BinaryDeserializer();
+            _deserializer.OnDeserializedMessage += (message) => OnMessage.Invoke(this, message);
+            _stream.BeginRead(_buffer, 0, _buffer.Length, new AsyncCallback(ReceiveCallback), null);
         }
 
         private void ReceiveCallback(IAsyncResult ar)
         {
             var length = _stream.EndRead(ar);
-            var received = _receiveBuffer.Take(length).ToArray();
+            var received = _buffer.Take(length).ToArray();
 
             if (length == 0) {
-                this.Terminate(ErrorCode.GeneralError, new Exception("Connection unexpectedly terminated. (receivedBytes == 0)"));
+                Terminate(ErrorCode.GeneralError, new Exception("Connection unexpectedly terminated. (receivedBytes == 0)"));
+            } else {
+                _deserializer.AddBytes(received);
+                _stream.BeginRead(_buffer, 0, _buffer.Length, new AsyncCallback(ReceiveCallback), null);
             }
-
-            _deserializer.AddBytes(received);
-            _stream.BeginRead(_receiveBuffer, 0, _receiveBuffer.Length, new AsyncCallback(ReceiveCallback), null);
-        }
-
-        internal void OnMessageReceived(Message message)
-        {
-            OnMessage(this, message);
-        }
-
-        public void Disconnect()
-        {
-            this.Terminate(ErrorCode.GeneralError, new Exception("Connection forcefully closed by client."));
         }
 
         private void Terminate(ErrorCode code, Exception exception)
@@ -95,12 +87,13 @@ namespace PlayerIOClient
             _socket.Disconnect(false);
             _socket.Close();
 
-            this.Connected = false;
+            Connected = false;
 
-            if (OnDisconnect != null)
+            if (OnDisconnect != null) {
                 OnDisconnect?.Invoke(this, exception.Message);
-            else
+            } else {
                 throw new PlayerIOError(ErrorCode.InternalError, string.Concat(new object[] { "Connection from ", _endpoint.Address, " was closed. ", ", message: ", exception.Message }));
+            }
         }
     }
 }
