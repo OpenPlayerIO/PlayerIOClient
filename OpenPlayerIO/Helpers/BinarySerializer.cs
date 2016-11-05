@@ -47,16 +47,16 @@ namespace PlayerIOClient.Helpers
     internal class BinaryDeserializer
     {
         public event MessageDeserializedEventHandler OnDeserializedMessage;
-        private event ValueDeserializedEventHandler OnDeserializedValue;
+        internal event ValueDeserializedEventHandler OnDeserializedValue;
 
-        private State State = State.Init;
-        private Pattern Pattern = Pattern.DOES_NOT_EXIST;
+        internal State State = State.Init;
+        internal Pattern Pattern = Pattern.DOES_NOT_EXIST;
 
-        private MemoryStream _buffer;
-        private Message _message;
+        internal MemoryStream _buffer;
+        internal Message _message;
 
-        private int _length;
-        private int _partLength;
+        internal int _length;
+        internal int _partLength;
 
         public BinaryDeserializer()
         {
@@ -86,15 +86,13 @@ namespace PlayerIOClient.Helpers
             };
         }
 
-        public void AddByte(byte input) => DeserializeValue(input);
-
         public void AddBytes(byte[] input)
         {
             foreach (var value in input)
                 DeserializeValue(value);
         }
 
-        private void DeserializeValue(byte value)
+        internal void DeserializeValue(byte value)
         {
             switch (State) {
 
@@ -275,7 +273,7 @@ namespace PlayerIOClient.Helpers
 
     internal static class PatternHelper
     {
-        public static Pattern RetrieveFlagPattern(this byte input)
+        internal static Pattern RetrieveFlagPattern(this byte input)
         {
             foreach (var pattern in ((Pattern[])Enum.GetValues(typeof(Pattern))).OrderByDescending(p => p))
                 if ((input & (byte)pattern) == (byte)pattern)
@@ -284,7 +282,7 @@ namespace PlayerIOClient.Helpers
             return Pattern.DOES_NOT_EXIST;
         }
 
-        public static int RetrievePartLength(this byte input, Pattern pattern)
+        internal static int RetrievePartLength(this byte input, Pattern pattern)
         {
             return input & ~(byte)pattern;
         }
@@ -292,17 +290,22 @@ namespace PlayerIOClient.Helpers
 
     internal class BinarySerializer
     {
-        private static MemoryStream Buffer = new MemoryStream();
+        internal static MemoryStream _buffer = new MemoryStream();
 
         public byte[] Serialize(Message message)
         {
+            byte[] output;
+
             SerializeValue(message.Count);
             SerializeValue(message.Type);
 
             foreach (var value in message)
                 SerializeValue(value);
 
-            return Buffer.ToArray();
+            output = _buffer.ToArray();
+            _buffer = new MemoryStream();
+
+            return output;
         }
 
         private void SerializeValue(object value)
@@ -363,7 +366,7 @@ namespace PlayerIOClient.Helpers
                     var bytes = LittleEndianToNetworkOrderBitConverter.GetBytes(length);
                     WriteBottomPatternAndBytes(bottomPattern, bytes);
                 } else {
-                    Buffer.WriteByte((byte)((int)topPattern | length));
+                    _buffer.WriteByte((byte)((int)topPattern | length));
                 }
             }
 
@@ -371,8 +374,8 @@ namespace PlayerIOClient.Helpers
             {
                 var counter = bytes[0] != 0 ? 3 : bytes[1] != 0 ? 2 : bytes[2] != 0 ? 1 : 0;
 
-                Buffer.WriteByte((byte)((int)pattern | counter));
-                Buffer.Write(bytes, bytes.Length - counter - 1, counter + 1);
+                _buffer.WriteByte((byte)((int)pattern | counter));
+                _buffer.Write(bytes, bytes.Length - counter - 1, counter + 1);
             }
 
             internal static void WriteLongPattern(Pattern shortPattern, Pattern longPattern, byte[] bytes)
@@ -386,23 +389,23 @@ namespace PlayerIOClient.Helpers
                 }
 
                 if (counter > 3)
-                    Buffer.WriteByte((byte)((byte)longPattern | counter - 4));
+                    _buffer.WriteByte((byte)((byte)longPattern | counter - 4));
                 else
-                    Buffer.WriteByte((byte)((byte)shortPattern | counter));
+                    _buffer.WriteByte((byte)((byte)shortPattern | counter));
 
-                Buffer.Write(bytes, bytes.Length - counter - 1, counter + 1);
+                _buffer.Write(bytes, bytes.Length - counter - 1, counter + 1);
             }
 
             internal static void Write(Pattern pattern) => Write((byte)pattern);
 
             internal static void Write(byte value)
             {
-                Buffer.WriteByte(value);
+                _buffer.WriteByte(value);
             }
 
             internal static void Write(byte[] value)
             {
-                Buffer.Write(value, 0, value.Length);
+                _buffer.Write(value, 0, value.Length);
             }
         }
     }

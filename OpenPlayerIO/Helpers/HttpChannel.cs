@@ -11,8 +11,8 @@ namespace PlayerIOClient.Helpers
 {
     internal class HttpChannel
     {
-        private const string EndpointUri = "http://api.playerio.com/api";
-        private Dictionary<string, string> _headers;
+        private string EndpointUri = "http://api.playerio.com/api";
+        private Dictionary<string, string> _headers = new Dictionary<string, string>();
 
         public TResponse Request<TRequest, TResponse, TError>(int method, TRequest args) where TError : Exception
         {
@@ -97,11 +97,12 @@ namespace PlayerIOClient.Helpers
         }
 
         public void SetToken(string token) => _headers = new Dictionary<string, string>() { ["playertoken"] = token };
+        public void SetEndpoint(string endpoint) { EndpointUri = endpoint; }
     }
 
     internal static class StreamExtensions
     {
-        public static byte[] ReadAllBytes(this Stream instream)
+        internal static byte[] ReadAllBytes(this Stream instream)
         {
             if (instream is MemoryStream)
                 return ((MemoryStream)instream).ToArray();

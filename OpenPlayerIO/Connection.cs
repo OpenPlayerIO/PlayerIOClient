@@ -32,11 +32,12 @@ namespace PlayerIOClient
         private readonly Socket _socket;
         private readonly Stream _stream;
         private readonly BinaryDeserializer _deserializer;
+        private readonly BinarySerializer _serializer;
 
         private readonly byte[] _buffer = new byte[65536];
         private readonly string _joinKey;
 
-        public void Send(string type, params object[] parameters) => _socket.Send(new BinarySerializer().Serialize(new Message(type, parameters)));
+        public void Send(string type, params object[] parameters) => _socket.Send(_serializer.Serialize(new Message(type, parameters)));
 
         public void Disconnect() => Terminate(ErrorCode.GeneralError, new Exception("Connection forcefully closed by client."));
 
@@ -50,8 +51,11 @@ namespace PlayerIOClient
 
             _stream = new NetworkStream(_socket);
 
+            _serializer = new BinarySerializer();
+            _deserializer = new BinaryDeserializer();
+
             _socket.Send(new[] { (byte)Enums.ProtocolType.Binary });
-            _socket.Send(new Message("join", joinKey).Serialize());
+            _socket.Send(_serializer.Serialize(new Message("join", joinKey)));
 
             OnMessage += (sender, message) => {
                 if (message.Type == "playerio.joinresult") {
@@ -63,7 +67,6 @@ namespace PlayerIOClient
                 }
             };
 
-            _deserializer = new BinaryDeserializer();
             _deserializer.OnDeserializedMessage += (message) => OnMessage.Invoke(this, message);
             _stream.BeginRead(_buffer, 0, _buffer.Length, new AsyncCallback(ReceiveCallback), null);
         }

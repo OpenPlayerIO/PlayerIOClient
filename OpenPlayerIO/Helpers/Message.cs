@@ -216,8 +216,6 @@ namespace PlayerIOClient
             return sb.ToString();
         }
 
-        internal byte[] Serialize() => new BinarySerializer().Serialize(this);
-
         public IEnumerator<object> GetEnumerator()
         {
             return Values.Select(t => t.Item1).GetEnumerator();

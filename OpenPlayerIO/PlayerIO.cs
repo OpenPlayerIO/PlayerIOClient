@@ -15,6 +15,8 @@ namespace PlayerIOClient
         private static readonly HttpChannel Channel = new HttpChannel();
         public static QuickConnect QuickConnect => _quickConnect.Value;
 
+        public static void SetAPIEndpoint(string endpoint) => Channel.SetEndpoint(endpoint);
+
         /// <summary> Connects to a game based on Player.IO as the given user. </summary>
         /// <param name="gameId">
         /// The ID of the game you wish to connect to. This value can be found in the admin panel.
