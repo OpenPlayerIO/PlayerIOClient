@@ -11,7 +11,7 @@
         Double,
         ByteArray,
         DateTime,
-        Array,
-        Obj
+        DatabaseArray,
+        DatabaseObject
     }
 }

@@ -14,7 +14,7 @@ namespace PlayerIOClient.Helpers
         public string Version { get; set; }
 
         [ProtoMember(3)]
-        public List<KeyValuePair<string, BigDBObjectValue>> Properties { get; set; }
+        public Dictionary<string, BigDBObjectValue> Properties { get; set; }
 
         [ProtoMember(4)]
         public uint Creator { get; set; }

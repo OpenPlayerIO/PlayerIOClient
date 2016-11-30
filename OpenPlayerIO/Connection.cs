@@ -68,7 +68,7 @@ namespace PlayerIOClient
             };
 
             _deserializer.OnDeserializedMessage += (message) => OnMessage.Invoke(this, message);
-            _stream.BeginRead(_buffer, 0, _buffer.Length, new AsyncCallback(ReceiveCallback), null);
+            _stream.BeginRead(_buffer, 0, _buffer.Length, new AsyncCallback(this.ReceiveCallback), null);
         }
 
         private void ReceiveCallback(IAsyncResult ar)
@@ -78,10 +78,10 @@ namespace PlayerIOClient
 
             if (length == 0) {
                 Terminate(ErrorCode.GeneralError, new Exception("Connection unexpectedly terminated. (receivedBytes == 0)"));
-            } else {
-                _deserializer.AddBytes(received);
-                _stream.BeginRead(_buffer, 0, _buffer.Length, new AsyncCallback(ReceiveCallback), null);
             }
+
+            _deserializer.AddBytes(received);
+            _stream.BeginRead(_buffer, 0, _buffer.Length, new AsyncCallback(this.ReceiveCallback), null);
         }
 
         private void Terminate(ErrorCode code, Exception exception)
@@ -90,7 +90,7 @@ namespace PlayerIOClient
             _socket.Disconnect(false);
             _socket.Close();
 
-            Connected = false;
+            this.Connected = false;
 
             if (OnDisconnect != null) {
                 OnDisconnect?.Invoke(this, exception.Message);

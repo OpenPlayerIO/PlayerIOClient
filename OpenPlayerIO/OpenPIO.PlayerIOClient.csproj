@@ -36,6 +36,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.2-beta1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="protobuf-net, Version=2.0.0.621, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <HintPath>..\packages\protobuf-net.2.0.0.621\lib\net40\protobuf-net.dll</HintPath>
       <Private>True</Private>
@@ -68,10 +72,9 @@
     <Compile Include="Helpers\DatabaseObject.cs" />
     <Compile Include="Helpers\HttpChannel.cs" />
     <Compile Include="Helpers\Message.cs" />
+    <Compile Include="Helpers\BigDBObjectValue.cs" />
     <Compile Include="Helpers\RoomInfo.cs" />
     <Compile Include="Helpers\ServerEndpoint.cs" />
-    <Compile Include="Helpers\SimpleJson.cs" />
-    <Compile Include="Messages\BigDB\BigDBObjectValue.cs" />
     <Compile Include="Messages\BigDB\BigDBObjectId.cs" />
     <Compile Include="Messages\BigDB\LoadObjectsError.cs" />
     <Compile Include="Messages\BigDB\LoadObjectsArgs.cs" />
@@ -97,6 +100,7 @@
     <Content Include="Messages\Unimplemented\AuthenticateOutput.cs" />
     <Content Include="Messages\Unimplemented\AuthenticateStartDialog.cs" />
     <Content Include="Messages\Unimplemented\BigDBChangeset.cs" />
+    <Compile Include="Messages\BigDB\BigDBObjectValue.cs" />
     <Compile Include="Messages\Client\ConnectArgs.cs" />
     <Compile Include="Messages\Client\ConnectOutput.cs" />
     <Compile Include="Messages\Client\CreateJoinRoomArgs.cs" />
@@ -245,6 +249,7 @@
     <None Include="packages.config">
       <visible>false</visible>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

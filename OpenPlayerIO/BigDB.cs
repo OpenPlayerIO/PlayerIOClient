@@ -32,9 +32,10 @@ namespace PlayerIOClient
             var loadObjectsOutput = _channel.Request<LoadObjectsArgs, LoadObjectsOutput, PlayerIOError>(85, new LoadObjectsArgs {
                 ObjectIds = new BigDBObjectId { Table = table, Keys = keys }
             });
-
-            loadObjectsOutput.Objects.ForEach(obj => obj.Table = table);
-
+            
+            foreach (var obj in loadObjectsOutput.Objects)
+                obj.Table = table;
+            
             return loadObjectsOutput.Objects;
         }
 

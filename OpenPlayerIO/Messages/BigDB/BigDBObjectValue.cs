@@ -1,94 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using PlayerIOClient.Enums;
 using ProtoBuf;
 
 namespace PlayerIOClient.Messages.BigDB
 {
     [ProtoContract]
-    public class BigDBObjectValue
+    public partial class BigDBObjectValue
     {
-        public object GetRealValue()
-        {
-            switch (Type) {
-                case ObjectType.String:
-                    return ValueString;
-
-                case ObjectType.Int:
-                    return ValueInteger;
-
-                case ObjectType.UInt:
-                    return ValueUInteger;
-
-                case ObjectType.Long:
-                    return ValueLong;
-
-                case ObjectType.Bool:
-                    return ValueBoolean;
-
-                case ObjectType.Float:
-                    return ValueFloat;
-
-                case ObjectType.Double:
-                    return ValueDouble;
-
-                case ObjectType.ByteArray:
-                    return ValueByteArray;
-
-                case ObjectType.DateTime:
-                    return UnixTimestampToDateTime(ValueDateTime);
-
-                case ObjectType.Array:
-                    return ValueArray.Select(x => new KeyValuePair<int, object>(x.Key, x.Value.GetRealValue())).ToList();
-
-                case ObjectType.Obj:
-                    return ValueObject.Select(x => new KeyValuePair<string, object>(x.Key, x.Value.GetRealValue())).ToList();
-
-                default:
-                    return null;
-            }
-        }
-
         [ProtoMember(1)]
         public ObjectType Type { get; set; }
 
-        [ProtoMember(2)]
+        [ProtoMember(2), JsonIgnore]
         public string ValueString { get; set; }
 
-        [ProtoMember(3)]
+        [ProtoMember(3), JsonIgnore]
         public int ValueInteger { get; set; }
 
-        [ProtoMember(4)]
+        [ProtoMember(4), JsonIgnore]
         public uint ValueUInteger { get; set; }
 
-        [ProtoMember(5)]
+        [ProtoMember(5), JsonIgnore]
         public long ValueLong { get; set; }
 
-        [ProtoMember(6)]
+        [ProtoMember(6), JsonIgnore]
         public bool ValueBoolean { get; set; }
 
-        [ProtoMember(7)]
+        [ProtoMember(7), JsonIgnore]
         public float ValueFloat { get; set; }
 
-        [ProtoMember(8)]
+        [ProtoMember(8), JsonIgnore]
         public double ValueDouble { get; set; }
 
-        [ProtoMember(9)]
+        [ProtoMember(9), JsonIgnore]
         public byte[] ValueByteArray { get; set; }
 
-        [ProtoMember(10)]
+        [ProtoMember(10), JsonIgnore]
         public long ValueDateTime { get; set; }
 
-        [ProtoMember(11)]
+        [ProtoMember(11), JsonIgnore]
         public KeyValuePair<int, BigDBObjectValue>[] ValueArray { get; set; }
 
-        [ProtoMember(12)]
+        [ProtoMember(12), JsonIgnore]
         public KeyValuePair<string, BigDBObjectValue>[] ValueObject { get; set; }
-
-        public static DateTime UnixTimestampToDateTime(long unixTimeStamp)
-        {
-            return new DateTime(1970, 1, 1).AddMilliseconds(unixTimeStamp);
-        }
     }
 }

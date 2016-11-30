@@ -14,7 +14,7 @@ namespace PlayerIOClient.Error
         /// <param name="message"> The error explained by words. </param>
         public PlayerIOError(ErrorCode errorCode, string message) : base(message)
         {
-            ErrorCode = errorCode;
+            this.ErrorCode = errorCode;
         }
     }
 }

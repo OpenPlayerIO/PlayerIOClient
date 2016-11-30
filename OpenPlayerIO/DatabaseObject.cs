@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
 using PlayerIOClient.Enums;
-using PlayerIOClient.Error;
 using PlayerIOClient.Messages.BigDB;
+using ProtoBuf;
 
 namespace PlayerIOClient.Helpers
 {
@@ -13,271 +14,115 @@ namespace PlayerIOClient.Helpers
     {
         public string Table { get; set; }
 
-        #region Enumerator
+        public DatabaseObject()
+        {
+            this.Properties = new Dictionary<string, BigDBObjectValue>();
+        }
 
+        #region Enumerator
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
-            foreach (KeyValuePair<string, BigDBObjectValue> current in Properties)
-                yield return new KeyValuePair<string, object>(current.Key, current.Value.GetRealValue());
+            foreach (var current in this.Properties)
+                yield return new KeyValuePair<string, object>(current.Key, current.Value.Value);
             yield break;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return Properties.Select(x => x.Value).GetEnumerator();
+            return this.Properties.Select(x => x.Value).GetEnumerator();
         }
-
         #endregion Enumerator
 
+        #region Methods
+        public override string ToString() => JsonConvert.SerializeObject(this.Properties, Formatting.Indented);
+
+        public bool Contains(string propertyExpression) => this.Properties.Any(property => property.Key == propertyExpression);
+
+        public static DatabaseObject LoadFromJSON(string input) => JsonConvert.DeserializeObject<DatabaseObject>(input);
+
+        public static DatabaseObject LoadFromProto(byte[] input) => Serializer.Deserialize<DatabaseObject>(new MemoryStream(input));
+
+        #endregion
+
         #region Get
+        public object this[string propertyExpression] => this.Properties.Where(x => x.Key == propertyExpression).FirstOrDefault().Value.Value;
 
-        [IndexerName("propertyExpression")]
-        public object this[string propertyExpression] => Item(propertyExpression);
+        internal object this[string propertyExpression, ObjectType expectedType] => this.Properties.Where(x => x.Key == propertyExpression).FirstOrDefault().Value ?? throw new Exception("Invalid Type");
 
-        internal object Item(string propertyExpression)
-        {
-            if (Properties == null)
-                return null;
+        public bool GetBool(string propertyExpression) => (bool)this[propertyExpression, ObjectType.Bool];
 
-            var output = Properties.Where(x => x.Key == propertyExpression).FirstOrDefault().Value;
+        public bool GetBool(string propertyExpression, bool defaultValue) =>
+                    this.Properties.Any(property => property.Key == propertyExpression) ? (bool)this[propertyExpression, ObjectType.Bool] : defaultValue;
 
-            return output?.GetRealValue();
-        }
+        public byte[] GetBytes(string propertyExpression) => (byte[])this[propertyExpression, ObjectType.ByteArray];
 
-        internal object Item(string propertyExpression, ObjectType expectedType)
-        {
-            if (Properties == null)
-                return null;
+        public byte[] GetBytes(string propertyExpression, byte[] defaultValue) =>
+                    this.Properties.Any(property => property.Key == propertyExpression) ? (byte[])this[propertyExpression, ObjectType.ByteArray] : defaultValue;
 
-            var output = Properties.Where(x => x.Key == propertyExpression).FirstOrDefault().Value;
+        public double GetDouble(string propertyExpression) => (double)this[propertyExpression, ObjectType.Double];
 
-            if (output.Type == expectedType)
-                return output?.GetRealValue();
-            else
-                throw new PlayerIOError(ErrorCode.GeneralError, $"The value is not { expectedType.ToString() }, it's type is: { output.Type.ToString() }");
-        }
+        public double GetDouble(string propertyExpression, double defaultValue) =>
+                    this.Properties.Any(property => property.Key == propertyExpression) ? (double)this[propertyExpression, ObjectType.Double] : defaultValue;
 
-        public bool GetBool(string propertyExpression) => (bool)this.Item(propertyExpression, ObjectType.Bool);
+        public float GetFloat(string propertyExpression) => (float)this[propertyExpression, ObjectType.Float];
 
-        public bool GetBool(string propertyExpression, bool defaultValue)
-        {
-            if (!this.Properties.Any(property => property.Key == propertyExpression))
-                return defaultValue;
-            else
-                return (bool)this.Item(propertyExpression, ObjectType.Bool);
-        }
+        public float GetFloat(string propertyExpression, float defaultValue) =>
+                    this.Properties.Any(property => property.Key == propertyExpression) ? (float)this[propertyExpression, ObjectType.Float] : defaultValue;
 
-        public byte[] GetBytes(string propertyExpression) => (byte[])this.Item(propertyExpression, ObjectType.ByteArray);
+        public int GetInt(string propertyExpression) => (int)this[propertyExpression, ObjectType.Int];
 
-        public byte[] GetBytes(string propertyExpression, byte[] defaultValue)
-        {
-            if (!this.Properties.Any(property => property.Key == propertyExpression))
-                return defaultValue;
-            else
-                return (byte[])this.Item(propertyExpression, ObjectType.ByteArray);
-        }
+        public int GetInt(string propertyExpression, int defaultValue) =>
+                    this.Properties.Any(property => property.Key == propertyExpression) ? (int)this[propertyExpression, ObjectType.Int] : defaultValue;
 
-        public double GetDouble(string propertyExpression) => (double)this.Item(propertyExpression, ObjectType.Double);
+        public long GetLong(string propertyExpression) => (long)this[propertyExpression, ObjectType.Long];
 
-        public double GetDouble(string propertyExpression, double defaultValue)
-        {
-            if (!this.Properties.Any(property => property.Key == propertyExpression))
-                return defaultValue;
-            else
-                return (double)this.Item(propertyExpression, ObjectType.Double);
-        }
+        public long GetLong(string propertyExpression, long defaultValue) =>
+                    this.Properties.Any(property => property.Key == propertyExpression) ? (long)this[propertyExpression, ObjectType.Long] : defaultValue;
 
-        public float GetFloat(string propertyExpression) => (float)this.Item(propertyExpression, ObjectType.Float);
+        public string GetString(string propertyExpression) => (string)this[propertyExpression, ObjectType.String];
 
-        public float GetFloat(string propertyExpression, float defaultValue)
-        {
-            if (!this.Properties.Any(property => property.Key == propertyExpression))
-                return defaultValue;
-            else
-                return (float)this.Item(propertyExpression, ObjectType.Float);
-        }
+        public string GetString(string propertyExpression, string defaultValue) =>
+                    this.Properties.Any(property => property.Key == propertyExpression) ? (string)this[propertyExpression, ObjectType.String] : defaultValue;
 
-        public int GetInt(string propertyExpression) => (int)this.Item(propertyExpression, ObjectType.Int);
+        public uint GetUInt(string propertyExpression) => (uint)this[propertyExpression, ObjectType.UInt];
 
-        public int GetInt(string propertyExpression, int defaultValue)
-        {
-            if (!this.Properties.Any(property => property.Key == propertyExpression))
-                return defaultValue;
-            else
-                return (int)this.Item(propertyExpression, ObjectType.Int);
-        }
+        public uint GetUInt(string propertyExpression, uint defaultValue) =>
+                    this.Properties.Any(property => property.Key == propertyExpression) ? (uint)this[propertyExpression, ObjectType.UInt] : defaultValue;
 
-        public long GetLong(string propertyExpression) => (long)this.Item(propertyExpression, ObjectType.Long);
+        public object GetValue(string propertyExpression) => this[propertyExpression];
 
-        public long GetLong(string propertyExpression, long defaultValue)
-        {
-            if (!this.Properties.Any(property => property.Key == propertyExpression))
-                return defaultValue;
-            else
-                return (long)this.Item(propertyExpression, ObjectType.Long);
-        }
+        public object GetValue(string propertyExpression, object defaultValue) =>
+                    this.Properties.Any(property => property.Key == propertyExpression) ? this[propertyExpression] : defaultValue;
 
-        public string GetString(string propertyExpression) => (string)this.Item(propertyExpression, ObjectType.String);
+        public DateTime GetDateTime(string propertyExpression) => (((long)this[propertyExpression]).FromUnixTime());
 
-        public string GetString(string propertyExpression, string defaultValue)
-        {
-            if (!this.Properties.Any(property => property.Key == propertyExpression))
-                return defaultValue;
-            else
-                return (string)this.Item(propertyExpression, ObjectType.String);
-        }
+        public DateTime GetDateTime(string propertyExpression, DateTime defaultValue) =>
+                    this.Properties.Any(property => property.Key == propertyExpression) ? ((long)this[propertyExpression, ObjectType.DateTime]).FromUnixTime() : defaultValue;
 
-        public uint GetUInt(string propertyExpression) => (uint)this.Item(propertyExpression, ObjectType.UInt);
+        public DatabaseArray GetArray(string propertyExpression) => (DatabaseArray)this[propertyExpression, ObjectType.DatabaseArray];
 
-        public uint GetUInt(string propertyExpression, uint defaultValue)
-        {
-            if (!this.Properties.Any(property => property.Key == propertyExpression))
-                return defaultValue;
-            else
-                return (uint)this.Item(propertyExpression, ObjectType.UInt);
-        }
-
-        public object GetValue(string propertyExpression)
-        {
-            return this.Item(propertyExpression);
-        }
-
-        public DateTime GetDateTime(string propertyExpression)
-        {
-            return (DateTime)this.Item(propertyExpression);
-        }
-
-        public DateTime GetDateTime(string propertyExpression, DateTime defaultValue)
-        {
-            if (!this.Properties.Any(property => property.Key == propertyExpression))
-                return defaultValue;
-            else
-                return new DateTime(1970, 1, 1).AddMilliseconds((double)this.Item(propertyExpression, ObjectType.DateTime));
-        }
-
-        public DatabaseArray GetArray(string propertyExpression)
-        {
-            return (DatabaseArray)this.Item(propertyExpression, ObjectType.Array);
-        }
-
-        public DatabaseObject GetObject(string propertyExpression)
-        {
-            return (DatabaseObject)this.Item(propertyExpression, ObjectType.Array);
-        }
-
-        #endregion Get
+        public DatabaseObject GetObject(string propertyExpression) => (DatabaseObject)this[propertyExpression, ObjectType.DatabaseObject];
+        #endregion
 
         #region Set
-
-        public virtual void Set(string propertyExpression, object value) => SetInternal(propertyExpression, value);
-
-        internal void SetInternal(object propertyExpressionOrIndex, object value)
+        public virtual DatabaseObject Set(string propertyExpression, object value)
         {
-            var objectValue = new BigDBObjectValue();
+            this.Properties.Add(propertyExpression, BigDBObjectValue.Create(value));
 
-            if (value is string) {
-                objectValue.Type = ObjectType.String;
-                objectValue.ValueString = (string)value;
-            }
-            if (value is int) {
-                objectValue.Type = ObjectType.Int;
-                objectValue.ValueInteger = (int)value;
-            }
-            if (value is uint) {
-                objectValue.Type = ObjectType.UInt;
-                objectValue.ValueUInteger = (uint)value;
-            }
-            if (value is long) {
-                objectValue.Type = ObjectType.Long;
-                objectValue.ValueLong = (long)value;
-            }
-            if (value is bool) {
-                objectValue.Type = ObjectType.Bool;
-                objectValue.ValueBoolean = (bool)value;
-            }
-            if (value is float) {
-                objectValue.Type = ObjectType.Float;
-                objectValue.ValueFloat = (float)value;
-            }
-            if (value is double) {
-                objectValue.Type = ObjectType.Double;
-                objectValue.ValueDouble = (double)value;
-            }
-            if (value is byte[]) {
-                objectValue.Type = ObjectType.ByteArray;
-                objectValue.ValueByteArray = (byte[])value;
-            }
-            if (value is DateTime) {
-                objectValue.Type = ObjectType.DateTime;
-                objectValue.ValueLong = Convert.ToInt64((((DateTime)value) - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
-            }
-            if (value.GetType().IsArray && typeof(BigDBObjectValue).IsAssignableFrom(value.GetType().GetElementType())) {
-                objectValue.Type = ObjectType.Array;
-                objectValue.ValueArray = ((BigDBObjectValue[])value).Select((v, i) => new KeyValuePair<int, BigDBObjectValue>(i, v)).ToArray();
-            }
-            if (value is KeyValuePair<string, BigDBObjectValue>) {
-                objectValue.Type = ObjectType.Obj;
-                objectValue.ValueObject = (KeyValuePair<string, BigDBObjectValue>[])value;
-            }
-            if (value is DatabaseObject) {
-                objectValue.Type = ObjectType.Obj;
-                objectValue.ValueObject = ((DatabaseObject)value).Properties.ToArray();
-            }
-            if (value is DatabaseArray) {
-                objectValue.Type = ObjectType.Array;
-                objectValue.ValueArray = ((DatabaseObject)value).Properties.Select((v, i) => new KeyValuePair<int, BigDBObjectValue>(i, v.Value)).ToArray();
-            }
-
-            Properties.Add(new KeyValuePair<string, BigDBObjectValue>(propertyExpressionOrIndex as string, objectValue));
+            return this;
         }
+        #endregion
 
-        #endregion Set
-
+        #region Remove
         public void Remove(string propertyExpression)
         {
-            Properties.RemoveAll(x => x.Key == propertyExpression);
+            this.Properties.Remove(propertyExpression);
         }
 
         public void Clear()
         {
-            Properties.Clear();
+            this.Properties.Clear();
         }
-
-        public bool Contains(string propertyExpression)
-        {
-            return Properties.Any(property => property.Key == propertyExpression);
-        }
-
-        public override string ToString()
-        {
-            return SimpleJson.FormatJson(SimpleJson.SerializeObject(ToDictionary(this)));
-        }
-
-        internal object ToDictionary(dynamic input)
-        {
-            var dictionary = new System.Dynamic.ExpandoObject() as IDictionary<string, object>;
-
-            if (input is DatabaseObject)
-                foreach (var property in input.Properties)
-                    dictionary.Add(property.Key, ToDictionary(property.Value));
-            else if ((input is BigDBObjectValue)) {
-                switch ((input as BigDBObjectValue).Type) {
-                    case ObjectType.Obj:
-                    case ObjectType.Array:
-                        foreach (var property in input.GetRealValue())
-                            dictionary.Add(property.Key.ToString(), ToDictionary(property.Value));
-                        break;
-
-                    default:
-                        return ToDictionary(input.GetRealValue());
-                }
-            } else if (input is List<KeyValuePair<int, object>>)
-                foreach (var property in input)
-                    dictionary.Add(property.Key.ToString(), ToDictionary(property.Value));
-            else
-                return input;
-
-            return dictionary;
-        }
+        #endregion
     }
 }

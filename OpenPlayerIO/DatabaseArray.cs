@@ -10,16 +10,16 @@ namespace PlayerIOClient
     {
         public void Set(int index, object value)
         {
-            SetInternal(index, value);
+            Set(index.ToString(), value);
         }
 
         public void Add(object value)
         {
-            SetInternal(Properties.Count + 1, value);
+            Set(this.Properties.Count + 1, value);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override void Set(string propertyExpression, object value)
+        public override DatabaseObject Set(string propertyExpression, object value)
         {
             throw new Exception("You cannot set a string property from a DatabaseArray.");
         }
