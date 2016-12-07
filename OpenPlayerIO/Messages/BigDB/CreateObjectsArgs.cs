@@ -7,7 +7,7 @@ namespace PlayerIOClient.Messages.BigDB
     internal class CreateObjectsArgs
     {
         [ProtoMember(1)]
-        public DatabaseObject[] Objects { get; set; }
+        public SentDatabaseObject[] Objects { get; set; }
 
         [ProtoMember(2)]
         public bool LoadExisting { get; set; }

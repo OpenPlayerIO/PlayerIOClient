@@ -39,11 +39,16 @@ namespace PlayerIOClient
             return loadObjectsOutput.Objects;
         }
 
-        public DatabaseObject LoadOrCreate(string table, string[] keys) => CreateObjects((from key in keys select new DatabaseObject() { Key = key, Table = table }).ToArray(), true).FirstOrDefault();
+        public DatabaseObject LoadOrCreate(string table, string[] keys) => CreateObjects((from key in keys select new SentDatabaseObject() { Key = key, Table = table }).ToArray(), true).FirstOrDefault();
 
-        public DatabaseObject CreateObject(string table, string key, DatabaseObject obj) => CreateObjects(new[] { new DatabaseObject() { Table = table, Key = key, Properties = obj.Properties } }, false).FirstOrDefault();
+        public DatabaseObject CreateObject(string table, string key, DatabaseObject obj)
+        {
+            var createObjectsOutput = CreateObjects(new[] { new SentDatabaseObject() { Table = table, Key = key, Properties = obj.Properties } }, false);
 
-        internal DatabaseObject[] CreateObjects(DatabaseObject[] objects, bool loadExisting)
+            return createObjectsOutput.FirstOrDefault();
+        }
+
+        internal DatabaseObject[] CreateObjects(SentDatabaseObject[] objects, bool loadExisting)
         {
             var output = _channel.Request<CreateObjectsArgs, CreateObjectsOutput, PlayerIOError>(82, new CreateObjectsArgs {
                 LoadExisting = loadExisting,

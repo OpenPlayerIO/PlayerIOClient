@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using PlayerIOClient.Enums;
-using PlayerIOClient.Helpers;
 
 namespace PlayerIOClient
 {

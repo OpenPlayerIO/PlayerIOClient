@@ -25,6 +25,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -74,6 +75,7 @@
     <Compile Include="Helpers\Message.cs" />
     <Compile Include="Helpers\BigDBObjectValue.cs" />
     <Compile Include="Helpers\RoomInfo.cs" />
+    <Compile Include="Helpers\SentDatabaseObject.cs" />
     <Compile Include="Helpers\ServerEndpoint.cs" />
     <Compile Include="Messages\BigDB\BigDBObjectId.cs" />
     <Compile Include="Messages\BigDB\LoadObjectsError.cs" />

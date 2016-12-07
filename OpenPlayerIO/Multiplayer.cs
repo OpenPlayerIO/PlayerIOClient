@@ -17,8 +17,8 @@ namespace PlayerIOClient
         [Obsolete("Please use DevelopmentServer property instead")]
         public ServerEndpoint DevServer
         {
-            get { return DevelopmentServer; }
-            set { DevelopmentServer = value; }
+            get { return this.DevelopmentServer; }
+            set { this.DevelopmentServer = value; }
         }
 
         private readonly HttpChannel _channel;
@@ -53,10 +53,12 @@ namespace PlayerIOClient
                 Visible = visible,
                 RoomData = Converter.Convert(roomData),
                 JoinData = Converter.Convert(joinData),
-                IsDevRoom = DevelopmentServer != null
+                IsDevRoom = this.DevelopmentServer != null
             };
+
             var createJoinRoomOutput = _channel.Request<CreateJoinRoomArgs, CreateJoinRoomOutput, PlayerIOError>(27, createJoinRoomArg);
-            var serverEndpoint = DevelopmentServer ?? Converter.Convert(createJoinRoomOutput.Endpoints[0]);
+            var serverEndpoint = this.DevelopmentServer ?? Converter.Convert(createJoinRoomOutput.Endpoints[0]);
+
             return new Connection(serverEndpoint, createJoinRoomOutput.JoinKey);
         }
 
@@ -70,10 +72,12 @@ namespace PlayerIOClient
             var joinRoomArg = new JoinRoomArgs {
                 RoomId = roomId,
                 JoinData = Converter.Convert(joinData),
-                IsDevRoom = DevelopmentServer != null
+                IsDevRoom = this.DevelopmentServer != null
             };
+
             var joinRoomOutput = _channel.Request<JoinRoomArgs, JoinRoomOutput, PlayerIOError>(24, joinRoomArg);
-            var serverEndpoint = DevelopmentServer ?? Converter.Convert(joinRoomOutput.Endpoints[0]);
+            var serverEndpoint = this.DevelopmentServer ?? Converter.Convert(joinRoomOutput.Endpoints[0]);
+
             return new Connection(serverEndpoint, joinRoomOutput.JoinKey);
         }
 
@@ -100,6 +104,7 @@ namespace PlayerIOClient
                 OnlyDevRooms = onlyDevRooms
             };
             var listRoomsOutput = _channel.Request<ListRoomsArgs, ListRoomsOutput, PlayerIOError>(30, listRoomsArg);
+
             return listRoomsOutput.RoomInfo ?? new RoomInfo[0];
         }
     }

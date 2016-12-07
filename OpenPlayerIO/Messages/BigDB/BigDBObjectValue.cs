@@ -8,7 +8,7 @@ namespace PlayerIOClient.Messages.BigDB
     [ProtoContract]
     public partial class BigDBObjectValue
     {
-        [ProtoMember(1)]
+        [ProtoMember(1), JsonIgnore]
         public ObjectType Type { get; set; }
 
         [ProtoMember(2), JsonIgnore]

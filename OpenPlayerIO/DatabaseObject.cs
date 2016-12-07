@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using PlayerIOClient.Enums;
 using PlayerIOClient.Messages.BigDB;
 using ProtoBuf;
@@ -33,8 +34,36 @@ namespace PlayerIOClient.Helpers
         }
         #endregion Enumerator
 
+        internal object ToDictionary(object input)
+        {
+            var dictionary = new System.Dynamic.ExpandoObject() as IDictionary<string, object>;
+
+            switch (input) {
+                case DatabaseObject databaseObject:
+                    foreach (var property in databaseObject.Properties)
+                        dictionary.Add(property.Key, ToDictionary(property.Value));
+                    break;
+                case BigDBObjectValue objectValue:
+                    switch (objectValue.Type) {
+                        case ObjectType.DatabaseArray:
+                        case ObjectType.DatabaseObject:
+                            foreach (var property in (dynamic)objectValue.Value)
+                                dictionary.Add(property.Key.ToString(), ToDictionary(property.Value));
+                            break;
+                        default: return ToDictionary(objectValue.Value);
+                    }
+                    break;
+                default: return input;
+            }
+
+            return dictionary;
+        }
+
         #region Methods
-        public override string ToString() => JsonConvert.SerializeObject(this.Properties, Formatting.Indented);
+        public override string ToString() {
+
+            return JsonConvert.SerializeObject(ToDictionary(this), Formatting.Indented);
+        }
 
         public bool Contains(string propertyExpression) => this.Properties.Any(property => property.Key == propertyExpression);
 
