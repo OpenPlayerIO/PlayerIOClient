@@ -76,7 +76,7 @@ namespace PlayerIOClient.Helpers
         #region Get
         public object this[string propertyExpression] => this.Properties.Where(x => x.Key == propertyExpression).FirstOrDefault().Value.Value;
 
-        internal object this[string propertyExpression, ObjectType expectedType] => this.Properties.Where(x => x.Key == propertyExpression).FirstOrDefault().Value ?? throw new Exception("Invalid Type");
+        internal object this[string propertyExpression, ObjectType expectedType] => this.Properties.Where(x => x.Key == propertyExpression).FirstOrDefault().Value.Value ?? throw new Exception("Invalid Type");
 
         public bool GetBool(string propertyExpression) => (bool)this[propertyExpression, ObjectType.Bool];
 

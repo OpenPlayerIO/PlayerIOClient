@@ -39,7 +39,9 @@ namespace PlayerIOClient
             return loadObjectsOutput.Objects;
         }
 
-        public DatabaseObject LoadOrCreate(string table, string[] keys) => CreateObjects((from key in keys select new SentDatabaseObject() { Key = key, Table = table }).ToArray(), true).FirstOrDefault();
+        public DatabaseObject LoadOrCreate(string table, string key) => CreateObjects(new[] { new SentDatabaseObject() { Key = key, Table = table } }, true).FirstOrDefault();
+
+        public DatabaseObject[] LoadKeysOrCreate(string table, string[] keys) => CreateObjects((from key in keys select new SentDatabaseObject() { Key = key, Table = table }).ToArray(), true);
 
         public DatabaseObject CreateObject(string table, string key, DatabaseObject obj)
         {
