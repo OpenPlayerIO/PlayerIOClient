@@ -9,10 +9,9 @@ An open-source alternative to PlayerIOClient.
 - [x] ErrorLog
 - [x] Message
 - [x] Binary Message Serializer and Deserializer
-- [ ] Achivement
+- [ ] Achievement
 - [ ] Authenticate
 - [ ] BigDB Changeset
 - [ ] Notification
-- [ ] BigDB LoadIndex
 - [ ] PlayerInsight
 - [ ] OneScore
