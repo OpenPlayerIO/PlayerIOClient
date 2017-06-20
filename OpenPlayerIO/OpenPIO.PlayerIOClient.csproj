@@ -69,6 +69,7 @@
     <Compile Include="Helpers\BinarySerializer.cs" />
     <Compile Include="Helpers\BuyItemInfo.cs" />
     <Compile Include="DatabaseArray.cs" />
+    <Compile Include="Helpers\Callback.cs" />
     <Compile Include="Helpers\Converter.cs" />
     <Compile Include="Helpers\DatabaseObject.cs" />
     <Compile Include="Helpers\HttpChannel.cs" />

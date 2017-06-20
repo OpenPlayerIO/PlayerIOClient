@@ -14,7 +14,7 @@ namespace PlayerIOClient.Helpers
         private string EndpointUri = "http://api.playerio.com/api";
         private Dictionary<string, string> _headers = new Dictionary<string, string>();
 
-        public TResponse Request<TRequest, TResponse, TError>(int method, TRequest args) where TError : Exception
+        public TResponse Request<TRequest, TResponse, TError>(int method, TRequest args, Callback<TError> errorCallback = null) where TError : Exception
         {
             var r = default(TResponse);
             var request = GetRequest(method);
@@ -30,7 +30,12 @@ namespace PlayerIOClient.Helpers
                     if (ReadHeader(responseStream)) {
                         r = Serializer.Deserialize<TResponse>(responseStream);
                     } else {
-                        throw GetError<TError>(responseStream);
+                        if (errorCallback != null) {
+                            errorCallback(GetError<TError>(responseStream));
+
+                            return default(TResponse);
+                        }
+                        else throw GetError<TError>(responseStream);
                     }
                 }
             }
