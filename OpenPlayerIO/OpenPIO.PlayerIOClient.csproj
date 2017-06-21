@@ -79,6 +79,8 @@
     <Compile Include="Helpers\SentDatabaseObject.cs" />
     <Compile Include="Helpers\ServerEndpoint.cs" />
     <Compile Include="Messages\BigDB\BigDBObjectId.cs" />
+    <Compile Include="Messages\BigDB\LoadIndexRangeArgs.cs" />
+    <Compile Include="Messages\BigDB\LoadIndexRangeOutput.cs" />
     <Compile Include="Messages\BigDB\LoadObjectsError.cs" />
     <Compile Include="Messages\BigDB\LoadObjectsArgs.cs" />
     <Compile Include="Messages\BigDB\LoadObjectsOutput.cs" />
@@ -134,8 +136,6 @@
     <Compile Include="Messages\Client\KongregateConnectOutput.cs" />
     <Compile Include="Messages\Client\ListRoomsArgs.cs" />
     <Compile Include="Messages\Client\ListRoomsOutput.cs" />
-    <Content Include="Messages\Unimplemented\LoadIndexRangeArgs.cs" />
-    <Content Include="Messages\Unimplemented\LoadIndexRangeOutput.cs" />
     <Content Include="Messages\Unimplemented\LoadMatchingObjectsArgs.cs" />
     <Content Include="Messages\Unimplemented\LoadMatchingObjectsOutput.cs" />
     <Content Include="Messages\Unimplemented\Notification.cs" />

@@ -60,8 +60,8 @@ namespace PlayerIOClient.Helpers
         }
 
         #region Methods
-        public override string ToString() {
-
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(ToDictionary(this), Formatting.Indented);
         }
 
