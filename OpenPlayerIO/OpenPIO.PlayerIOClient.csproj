@@ -75,6 +75,16 @@
     <Compile Include="Helpers\HttpChannel.cs" />
     <Compile Include="Helpers\Message.cs" />
     <Compile Include="Helpers\BigDBObjectValue.cs" />
+    <Compile Include="Helpers\MultiplayerProxy.cs" />
+    <Compile Include="Helpers\ProxySocket\AuthMethod.cs" />
+    <Compile Include="Helpers\ProxySocket\AuthNone.cs" />
+    <Compile Include="Helpers\ProxySocket\AuthUserPass.cs" />
+    <Compile Include="Helpers\ProxySocket\IAsyncProxyResult.cs" />
+    <Compile Include="Helpers\ProxySocket\ProxyException.cs" />
+    <Compile Include="Helpers\ProxySocket\ProxySocket.cs" />
+    <Compile Include="Helpers\ProxySocket\Socks4Handler.cs" />
+    <Compile Include="Helpers\ProxySocket\Socks5Handler.cs" />
+    <Compile Include="Helpers\ProxySocket\SocksHandler.cs" />
     <Compile Include="Helpers\RoomInfo.cs" />
     <Compile Include="Helpers\SentDatabaseObject.cs" />
     <Compile Include="Helpers\ServerEndpoint.cs" />

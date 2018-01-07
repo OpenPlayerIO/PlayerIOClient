@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using PlayerIOClient.Error;
 using PlayerIOClient.Helpers;
@@ -29,7 +30,7 @@ namespace PlayerIOClient
         public event DisconnectEventHandler OnDisconnect;
 
         private readonly ServerEndpoint _endpoint;
-        private readonly Socket _socket;
+        private readonly ProxySocket _socket;
         private readonly Stream _stream;
         private readonly BinaryDeserializer _deserializer;
         private readonly BinarySerializer _serializer;
@@ -39,14 +40,28 @@ namespace PlayerIOClient
 
         public void Send(string type, params object[] parameters) => _socket.Send(_serializer.Serialize(new Message(type, parameters)));
 
-        public void Disconnect() => Terminate(ErrorCode.GeneralError, new Exception("Connection forcefully closed by client."));
+        public void Disconnect() => Terminate(new Exception("Connection forcefully closed by client."));
 
-        public Connection(ServerEndpoint endpoint, string joinKey)
+        public Connection(ServerEndpoint endpoint, string joinKey, MultiplayerProxy proxy = null)
         {
             _endpoint = endpoint;
             _joinKey = joinKey;
+            
+            _socket = new ProxySocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            
+            if (proxy != null) {
+                _socket.ProxyEndPoint = new IPEndPoint(IPAddress.Parse(proxy.Address), proxy.Port);
+                _socket.ProxyType = proxy.Type;
 
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                if (proxy.Username != null)
+                    _socket.ProxyUser = proxy.Username;
+
+                if (proxy.Password != null)
+                    _socket.ProxyPass = proxy.Password;
+            }
+
+            // TODO: check for functional non-transparent proxy connection per MultiplayerProxy.StrictProxyMode
+
             _socket.Connect(endpoint.Address, endpoint.Port);
 
             _stream = new NetworkStream(_socket);
@@ -77,14 +92,14 @@ namespace PlayerIOClient
             var received = _buffer.Take(length).ToArray();
 
             if (length == 0) {
-                Terminate(ErrorCode.GeneralError, new Exception("Connection unexpectedly terminated. (receivedBytes == 0)"));
+                Terminate(new Exception("Connection unexpectedly terminated. (receivedBytes == 0)"));
             }
 
             _deserializer.AddBytes(received);
             _stream.BeginRead(_buffer, 0, _buffer.Length, new AsyncCallback(this.ReceiveCallback), null);
         }
 
-        private void Terminate(ErrorCode code, Exception exception)
+        private void Terminate(Exception exception)
         {
             _stream.Close();
             _socket.Disconnect(false);

@@ -21,8 +21,9 @@ namespace PlayerIOClient
             set { this.DevelopmentServer = value; }
         }
 
-        private readonly HttpChannel _channel;
+        public MultiplayerProxy Proxy { get; set; }
 
+        private readonly HttpChannel _channel;
         internal Multiplayer(HttpChannel channel)
         {
             _channel = channel;
@@ -59,7 +60,7 @@ namespace PlayerIOClient
             var createJoinRoomOutput = _channel.Request<CreateJoinRoomArgs, CreateJoinRoomOutput, PlayerIOError>(27, createJoinRoomArg);
             var serverEndpoint = this.DevelopmentServer ?? Converter.Convert(createJoinRoomOutput.Endpoints[0]);
 
-            return new Connection(serverEndpoint, createJoinRoomOutput.JoinKey);
+            return new Connection(serverEndpoint, createJoinRoomOutput.JoinKey, this.Proxy);
         }
 
         /// <summary> Creates a multiplayer room (if it doesn't exists already), and joins it. </summary>
@@ -97,7 +98,7 @@ namespace PlayerIOClient
             if (createJoinRoomOutput != null) {
                 var serverEndpoint = this.DevelopmentServer ?? Converter.Convert(createJoinRoomOutput.Endpoints[0]);
 
-                successCallback(new Connection(serverEndpoint, createJoinRoomOutput.JoinKey));
+                successCallback(new Connection(serverEndpoint, createJoinRoomOutput.JoinKey, this.Proxy));
             }
         }
 
@@ -117,7 +118,7 @@ namespace PlayerIOClient
             var joinRoomOutput = _channel.Request<JoinRoomArgs, JoinRoomOutput, PlayerIOError>(24, joinRoomArg);
             var serverEndpoint = this.DevelopmentServer ?? Converter.Convert(joinRoomOutput.Endpoints[0]);
 
-            return new Connection(serverEndpoint, joinRoomOutput.JoinKey);
+            return new Connection(serverEndpoint, joinRoomOutput.JoinKey, this.Proxy);
         }
 
         /// <summary> Joins a running multiplayer room. </summary>
@@ -140,7 +141,7 @@ namespace PlayerIOClient
             if (joinRoomOutput != null) {
                 var serverEndpoint = this.DevelopmentServer ?? Converter.Convert(joinRoomOutput.Endpoints[0]);
 
-                successCallback(new Connection(serverEndpoint, joinRoomOutput.JoinKey));
+                successCallback(new Connection(serverEndpoint, joinRoomOutput.JoinKey, this.Proxy));
             }
         }
 
