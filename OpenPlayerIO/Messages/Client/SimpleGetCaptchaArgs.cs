@@ -1,7 +1,7 @@
 using System;
 using ProtoBuf;
 
-namespace PlayerIOClient.Messages.Unimplemented
+namespace PlayerIOClient.Messages.Client
 {
 	[ProtoContract]
 	internal class SimpleGetCaptchaArgs

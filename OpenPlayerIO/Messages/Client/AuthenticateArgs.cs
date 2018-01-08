@@ -1,7 +1,8 @@
 using PlayerIOClient.Helpers;
 using ProtoBuf;
+using System.Collections.Generic;
 
-namespace PlayerIOClient.Messages.Unimplemented
+namespace PlayerIOClient.Messages.Client
 {
 	[ProtoContract]
 	internal class AuthenticateArgs
@@ -13,18 +14,18 @@ namespace PlayerIOClient.Messages.Unimplemented
 		public string ConnectionId { get; set; }
 
 		[ProtoMember(3)]
-		public Message AuthenticationArguments { get; set; }
+		public KeyValuePair[] AuthenticationArguments { get; set; }
 
 		[ProtoMember(4)]
-		public string PlayerInsightSegments { get; set; }
+		public List<string> PlayerInsightSegments { get; set; }
 
 		[ProtoMember(5)]
 		public string ClientAPI { get; set; }
 
 		[ProtoMember(6)]
-		public Message ClientInfo { get; set; }
+		public KeyValuePair[] ClientInfo { get; set; }
 
 		[ProtoMember(7)]
-		public string PlayCodes { get; set; }
+		public List<string> PlayCodes { get; set; }
 	}
 }

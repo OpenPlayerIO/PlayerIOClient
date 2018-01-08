@@ -1,7 +1,9 @@
+using OpenPIO.PlayerIOClient.Enums;
 using PlayerIOClient.Helpers;
 using ProtoBuf;
+using System.Collections.Generic;
 
-namespace PlayerIOClient.Messages.Unimplemented
+namespace PlayerIOClient.Messages.Client
 {
 	[ProtoContract]
 	internal class AuthenticateOutput
@@ -18,11 +20,11 @@ namespace PlayerIOClient.Messages.Unimplemented
 		[ProtoMember(4)]
 		public string GameFSRedirectMap { get; set; }
 
-		[ProtoMember(5)]
-		public Message PlayerInsightState { get; set; }
+		//[ProtoMember(5)]
+		//public Message PlayerInsightState { get; set; }
 
 		[ProtoMember(6)]
-		public Message StartDialogs { get; set; }
+		public AuthenticateStartDialog[] StartDialogs { get; set; }
 
 		[ProtoMember(7)]
 		public bool IsSocialNetworkUser { get; set; }
@@ -34,15 +36,15 @@ namespace PlayerIOClient.Messages.Unimplemented
 		public string NotificationClickPayload { get; set; }
 
 		[ProtoMember(10)]
-		public bool IsInstalledByYahoo { get; set; }
+		public bool IsInstalledByPublishingNetwork { get; set; }
 
 		[ProtoMember(11)]
 		public string Deprecated1 { get; set; }
 
 		[ProtoMember(12)]
-		public int ApiSecurity { get; set; }
+		public ServerAPISecurity ApiSecurity { get; set; }
 
 		[ProtoMember(13)]
-		public string ApiServerHosts { get; set; }
+		public List<string> ApiServerHosts { get; set; }
 	}
 }

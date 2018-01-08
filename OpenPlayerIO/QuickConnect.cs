@@ -291,5 +291,42 @@ namespace PlayerIOClient
             _channel.Request<SimpleRecoverPasswordArgs, NoArgsOrOutput, PlayerIOError>(406,
                                                                                        simpleRecoverPasswordArgs);
         }
+
+        /// <summary>
+        /// Retrieves a key and captcha image URI, to be used for registrations where the added security of captchas are required.
+        /// </summary>
+        /// <param name="gameId"> The ID of the game you wish to register to. </param>
+        /// <param name="width"> The width of the captcha image. </param>
+        /// <param name="height"> The height of the captcha image. </param>
+        public SimpleGetCaptchaOutput SimpleGetCaptcha(string gameID, int width, int height)
+        {
+            var simpleGetCaptchaArgs = new SimpleGetCaptchaArgs {
+                GameId = gameID,
+                Width = width,
+                Height = height
+            };
+
+            return _channel.Request<SimpleGetCaptchaArgs, SimpleGetCaptchaOutput, PlayerIOError>(415,
+                                                                                                 simpleGetCaptchaArgs);
+        }
+
+        /// <summary>
+        /// Retrieves a key and captcha image URI, to be used for registrations where the added security of captchas are required.
+        /// </summary>
+        /// <param name="gameId"> The ID of the game you wish to register to. </param>
+        /// <param name="width"> The width of the captcha image. </param>
+        /// <param name="height"> The height of the captcha image. </param>
+        /// <param name="successCallback">A callback called with information about the captcha image, if successful. </param>
+        public void SimpleGetCaptcha(string gameID, int width, int height, Callback<SimpleGetCaptchaOutput> successCallback)
+        {
+            var simpleGetCaptchaArgs = new SimpleGetCaptchaArgs {
+                GameId = gameID,
+                Width = width,
+                Height = height
+            };
+
+            successCallback(_channel.Request<SimpleGetCaptchaArgs, SimpleGetCaptchaOutput, PlayerIOError>(415,
+                                                                                                 simpleGetCaptchaArgs));
+        }
     }
 }

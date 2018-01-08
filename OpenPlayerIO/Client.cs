@@ -49,6 +49,8 @@ namespace PlayerIOClient
         private readonly ErrorLog _errorlog;
         private readonly Multiplayer _multiplayer;
 
+        private string _gameFSRedirectMap;
+
         internal Client(HttpChannel channel, string token, string connectUserId)
         {
             _connectUserId = connectUserId;
@@ -60,6 +62,25 @@ namespace PlayerIOClient
             _payvault = new PayVault(channel);
             _bigdb = new BigDB(channel);
             _multiplayer = new Multiplayer(channel);
+        }
+
+        internal Client(HttpChannel channel, string gameId, string gameFSRedirectMap, string token, string connectUserId, bool showBranding, bool isSocialNetworkUser, object playerInsightState)
+        {
+            _connectUserId = connectUserId;
+            _channel = channel;
+            _token = token;
+            _channel.SetToken(_token);
+
+            _errorlog = new ErrorLog(channel);
+            _payvault = new PayVault(channel);
+            _bigdb = new BigDB(channel);
+            _multiplayer = new Multiplayer(channel);
+
+            _gameFSRedirectMap = gameFSRedirectMap;
+            //_gameId = gameId;
+            //_showBranding = showBranding;
+            //_isSocialNetworkUser = isSocialNetworkUser;
+            //_playerInsightState = playerInsightState;
         }
     }
 }

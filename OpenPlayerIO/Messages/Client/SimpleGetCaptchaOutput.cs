@@ -1,9 +1,9 @@
 using ProtoBuf;
 
-namespace PlayerIOClient.Messages.Unimplemented
+namespace PlayerIOClient.Messages.Client
 {
 	[ProtoContract]
-	internal class SimpleGetCaptchaOutput
+	public class SimpleGetCaptchaOutput
 	{
 		[ProtoMember(1)]
 		public string CaptchaKey { get; set; }

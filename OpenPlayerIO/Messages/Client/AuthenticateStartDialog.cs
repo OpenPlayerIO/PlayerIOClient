@@ -1,7 +1,7 @@
 using PlayerIOClient.Helpers;
 using ProtoBuf;
 
-namespace PlayerIOClient.Messages.Unimplemented
+namespace PlayerIOClient.Messages.Client
 {
 	[ProtoContract]
 	internal class AuthenticateStartDialog
@@ -10,6 +10,6 @@ namespace PlayerIOClient.Messages.Unimplemented
 		public string Name { get; set; }
 
 		[ProtoMember(2)]
-		public Message Arguments { get; set; }
+		public KeyValuePair[] Arguments { get; set; }
 	}
 }
