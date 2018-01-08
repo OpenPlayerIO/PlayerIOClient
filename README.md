@@ -13,7 +13,7 @@ An open-source alternative to PlayerIOClient.
 - [x] Message
 - [x] Binary Message Serializer and Deserializer
 - [ ] Achievement
-- [ ] Authenticate
+- [x] Authenticate
 - [ ] BigDB Changeset
 - [ ] Notification
 - [ ] PlayerInsight
