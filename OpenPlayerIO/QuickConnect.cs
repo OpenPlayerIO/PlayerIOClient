@@ -25,17 +25,13 @@ namespace PlayerIOClient
         /// The username or e-mail address of the user you wish to authenticate.
         /// </param>
         /// <param name="password"> The password of the user you wish to authenticate. </param>
-        /// <param name="playerInsightSegments"></param>
         public Client SimpleConnect(string gameId, string usernameOrEmail, string password, string[] playerInsightSegments = null)
         {
-            var simpleConnectArgs = new SimpleConnectArgs {
+            var simpleConnectOutput = _channel.Request<SimpleConnectArgs, ConnectOutput, PlayerIOError>(400, new SimpleConnectArgs {
                 GameId = gameId,
                 UsernameOrEmail = usernameOrEmail,
                 Password = password
-            };
-            var simpleConnectOutput =
-                _channel.Request<SimpleConnectArgs, ConnectOutput, PlayerIOError>(400,
-                                                                                  simpleConnectArgs);
+            });
 
             return new Client(_channel, simpleConnectOutput.Token, simpleConnectOutput.UserId);
         }
@@ -48,61 +44,51 @@ namespace PlayerIOClient
         /// The username or e-mail address of the user you wish to authenticate.
         /// </param>
         /// <param name="password"> The password of the user you wish to authenticate. </param>
-        /// <param name="playerInsightSegments"></param>
         /// <param name="successCallback"> A callback called when successfully connected. </param>
         /// <param name="errorCallback"> A callback called instead of <paramref name="successCallback"/> when an error occurs during connection. </param>
         public void SimpleConnect(string gameId, string usernameOrEmail, string password, string[] playerInsightSegments = null, Callback<Client> successCallback = null, Callback<PlayerIOError> errorCallback = null)
         {
-            var simpleConnectArgs = new SimpleConnectArgs {
+            var simpleConnectOutput = _channel.Request<SimpleConnectArgs, ConnectOutput, PlayerIOError>(400, new SimpleConnectArgs {
                 GameId = gameId,
                 UsernameOrEmail = usernameOrEmail,
                 Password = password
-            };
-            var simpleConnectOutput =
-                _channel.Request<SimpleConnectArgs, ConnectOutput, PlayerIOError>(400,
-                                                                                  simpleConnectArgs,
-                                                                                  errorCallback: errorCallback);
+            }, errorCallback);
 
             if (simpleConnectOutput != null)
                 successCallback(new Client(_channel, simpleConnectOutput.Token, simpleConnectOutput.UserId));
         }
 
         /// <summary> Connects to a game based on Player.IO as a Facebook user. </summary>
-        /// <param name="gameId">
-        /// The ID of the game you wish to connect to. This value can be found in the admin panel.
-        /// </param>
+        /// <param name="gameId"> The ID of the game you wish to connect to. This value can be found in the admin panel. </param>
         /// <param name="accessToken"> The Facebook access token of the user you wish to authenticate. </param>
         public Client FacebookOAuthConnect(string gameId, string accessToken)
         {
-            var facebookConnectArgs = new FacebookOAuthConnectArgs { GameId = gameId, AccessToken = accessToken };
-            var facebookConnectOutput =
-                _channel.Request<FacebookOAuthConnectArgs, FacebookOAuthConnectOutput, PlayerIOError>(418,
-                                                                                         facebookConnectArgs);
+            var facebookConnectOutput = _channel.Request<FacebookOAuthConnectArgs, FacebookOAuthConnectOutput, PlayerIOError>(418, new FacebookOAuthConnectArgs {
+                GameId = gameId,
+                AccessToken = accessToken
+            });
+
             return new Client(_channel, facebookConnectOutput.Token, facebookConnectOutput.UserId);
         }
 
         /// <summary> Connects to a game based on Player.IO as a Facebook user. </summary>
-        /// <param name="gameId">
-        /// The ID of the game you wish to connect to. This value can be found in the admin panel.
-        /// </param>
+        /// <param name="gameId"> The ID of the game you wish to connect to. This value can be found in the admin panel. </param>
         /// <param name="accessToken"> The Facebook access token of the user you wish to authenticate. </param>
         /// <param name="successCallback"> A callback called when successfully connected. </param>
         /// <param name="errorCallback"> A callback called instead of <paramref name="successCallback"/> when an error occurs during connection. </param>
         public void FacebookOAuthConnect(string gameId, string accessToken, Callback<Client> successCallback = null, Callback<PlayerIOError> errorCallback = null)
         {
-            var facebookConnectArgs = new FacebookOAuthConnectArgs { GameId = gameId, AccessToken = accessToken };
-            var facebookConnectOutput =
-                _channel.Request<FacebookOAuthConnectArgs, FacebookOAuthConnectOutput, PlayerIOError>(418,
-                                                                                         facebookConnectArgs);
+            var facebookConnectOutput = _channel.Request<FacebookOAuthConnectArgs, FacebookOAuthConnectOutput, PlayerIOError>(418, new FacebookOAuthConnectArgs {
+                GameId = gameId,
+                AccessToken = accessToken
+            }, errorCallback);
 
             if (facebookConnectOutput != null)
                 successCallback(new Client(_channel, facebookConnectOutput.Token, facebookConnectOutput.UserId));
         }
 
         /// <summary> Connects to a game based on Player.IO as a Kongregate user. </summary>
-        /// <param name="gameId">
-        /// The ID of the game you wish to connect to. This value can be found in the admin panel.
-        /// </param>
+        /// <param name="gameId"> The ID of the game you wish to connect to. This value can be found in the admin panel. </param>
         /// <param name="userId"> The Kongregate user ID of the user you wish to authenticate. </param>
         /// <param name="gameAuthToken">
         /// The Kongregate auth token of the game you wish to connect to (depends on the user you
@@ -110,21 +96,17 @@ namespace PlayerIOClient
         /// </param>
         public Client KongregateConnect(string gameId, string userId, string gameAuthToken)
         {
-            var kongregateConnectArgs = new KongregateConnectArgs {
+            var kongregateConnectOutput = _channel.Request<KongregateConnectArgs, KongregateConnectOutput, PlayerIOError>(400, new KongregateConnectArgs {
                 GameId = gameId,
                 UserId = userId,
                 GameAuthToken = gameAuthToken
-            };
-            var kongregateConnectOutput =
-                _channel.Request<KongregateConnectArgs, KongregateConnectOutput, PlayerIOError>(400,
-                                                                                      kongregateConnectArgs);
+            });
+
             return new Client(_channel, kongregateConnectOutput.Token, kongregateConnectOutput.UserId);
         }
 
         /// <summary> Connects to a game based on Player.IO as a Kongregate user. </summary>
-        /// <param name="gameId">
-        /// The ID of the game you wish to connect to. This value can be found in the admin panel.
-        /// </param>
+        /// <param name="gameId"> The ID of the game you wish to connect to. This value can be found in the admin panel. </param>
         /// <param name="userId"> The Kongregate user ID of the user you wish to authenticate. </param>
         /// <param name="gameAuthToken">
         /// The Kongregate auth token of the game you wish to connect to (depends on the user you
@@ -134,14 +116,11 @@ namespace PlayerIOClient
         /// <param name="errorCallback"> A callback called instead of <paramref name="successCallback"/> when an error occurs during connection. </param>
         public void KongregateConnect(string gameId, string userId, string gameAuthToken, Callback<Client> successCallback = null, Callback<PlayerIOError> errorCallback = null)
         {
-            var kongregateConnectArgs = new KongregateConnectArgs {
+            var kongregateConnectOutput = _channel.Request<KongregateConnectArgs, KongregateConnectOutput, PlayerIOError>(400, new KongregateConnectArgs {
                 GameId = gameId,
                 UserId = userId,
                 GameAuthToken = gameAuthToken
-            };
-            var kongregateConnectOutput =
-                _channel.Request<KongregateConnectArgs, KongregateConnectOutput, PlayerIOError>(400,
-                                                                                      kongregateConnectArgs);
+            }, errorCallback);
 
             if (kongregateConnectOutput != null)
                 successCallback(new Client(_channel, kongregateConnectOutput.Token, kongregateConnectOutput.UserId));
@@ -184,14 +163,11 @@ namespace PlayerIOClient
         /// <param name="errorCallback"> A callback called instead of <paramref name="successCallback"/> when an error occurs during connection. </param>
         public void SteamConnect(string gameId, string steamAppId, string steamSessionTicket, Callback<Client> successCallback = null, Callback<PlayerIOError> errorCallback = null)
         {
-            var steamConnectArgs = new SteamConnectArgs {
+            var steamConnectOutput = _channel.Request<SteamConnectArgs, SteamConnectOutput, PlayerIOError>(421, new SteamConnectArgs {
                 GameId = gameId,
                 SteamAppId = steamAppId,
                 SteamSessionTicket = steamSessionTicket
-            };
-            var steamConnectOutput =
-                _channel.Request<SteamConnectArgs, SteamConnectOutput, PlayerIOError>(421,
-                                                                                 steamConnectArgs);
+            }, errorCallback);
 
             if (steamConnectOutput != null)
                 successCallback(new Client(_channel, steamConnectOutput.Token, steamConnectOutput.UserId));
@@ -220,7 +196,7 @@ namespace PlayerIOClient
         /// <returns> The Client of the newly registered user. </returns>
         public Client SimpleRegister(string gameId, string username, string password, string email = null, string captchaKey = null, string captchaValue = null, Dictionary<string, string> extraData = null)
         {
-            var simpleRegisterArgs = new SimpleRegisterArgs {
+            var simpleRegisterOutput = _channel.Request<SimpleRegisterArgs, SimpleRegisterOutput, PlayerIORegistrationError>(403, new SimpleRegisterArgs {
                 GameId = gameId,
                 Username = username,
                 Password = password,
@@ -228,9 +204,7 @@ namespace PlayerIOClient
                 CaptchaKey = captchaKey,
                 CaptchaValue = captchaValue,
                 ExtraData = Converter.Convert(extraData)
-            };
-            var simpleRegisterOutput = _channel.Request<SimpleRegisterArgs, SimpleRegisterOutput, PlayerIORegistrationError>(403,
-                                                                                                                      simpleRegisterArgs);
+            });
 
             return new Client(_channel, simpleRegisterOutput.Token, simpleRegisterOutput.UserId);
         }
@@ -258,7 +232,7 @@ namespace PlayerIOClient
         /// <returns> The Client of the newly registered user. </returns>
         public void SimpleRegister(string gameId, string username, string password, string email = null, string captchaKey = null, string captchaValue = null, Dictionary<string, string> extraData = null, Callback<Client> successCallback = null, Callback<PlayerIORegistrationError> errorCallback = null)
         {
-            var simpleRegisterArgs = new SimpleRegisterArgs {
+            var simpleRegisterOutput = _channel.Request<SimpleRegisterArgs, SimpleRegisterOutput, PlayerIORegistrationError>(403, new SimpleRegisterArgs {
                 GameId = gameId,
                 Username = username,
                 Password = password,
@@ -266,9 +240,7 @@ namespace PlayerIOClient
                 CaptchaKey = captchaKey,
                 CaptchaValue = captchaValue,
                 ExtraData = Converter.Convert(extraData)
-            };
-            var simpleRegisterOutput = _channel.Request<SimpleRegisterArgs, SimpleRegisterOutput, PlayerIORegistrationError>(403,
-                                                                                                                      simpleRegisterArgs);
+            }, errorCallback);
 
             if (simpleRegisterOutput != null)
                 successCallback(new Client(_channel, simpleRegisterOutput.Token, simpleRegisterOutput.UserId));
@@ -279,17 +251,13 @@ namespace PlayerIOClient
         /// during registration.
         /// </summary>
         /// <param name="gameId"> The ID of the game the user is registered in. </param>
-        /// <param name="usernameOrEmail">
-        /// The username or e-mail address of the user who wishes to recover their password.
-        /// </param>
+        /// <param name="usernameOrEmail"> The username or e-mail address of the user who wishes to recover their password. </param>
         public void SimpleRecoverPassword(string gameId, string usernameOrEmail)
         {
-            var simpleRecoverPasswordArgs = new SimpleRecoverPasswordArgs {
+            _channel.Request<SimpleRecoverPasswordArgs, NoArgsOrOutput, PlayerIOError>(406, new SimpleRecoverPasswordArgs {
                 GameId = gameId,
                 UsernameOrEmail = usernameOrEmail
-            };
-            _channel.Request<SimpleRecoverPasswordArgs, NoArgsOrOutput, PlayerIOError>(406,
-                                                                                       simpleRecoverPasswordArgs);
+            });
         }
 
         /// <summary>
@@ -300,14 +268,11 @@ namespace PlayerIOClient
         /// <param name="height"> The height of the captcha image. </param>
         public SimpleGetCaptchaOutput SimpleGetCaptcha(string gameID, int width, int height)
         {
-            var simpleGetCaptchaArgs = new SimpleGetCaptchaArgs {
+            return _channel.Request<SimpleGetCaptchaArgs, SimpleGetCaptchaOutput, PlayerIOError>(415, new SimpleGetCaptchaArgs {
                 GameId = gameID,
                 Width = width,
                 Height = height
-            };
-
-            return _channel.Request<SimpleGetCaptchaArgs, SimpleGetCaptchaOutput, PlayerIOError>(415,
-                                                                                                 simpleGetCaptchaArgs);
+            });
         }
 
         /// <summary>
@@ -316,17 +281,18 @@ namespace PlayerIOClient
         /// <param name="gameId"> The ID of the game you wish to register to. </param>
         /// <param name="width"> The width of the captcha image. </param>
         /// <param name="height"> The height of the captcha image. </param>
-        /// <param name="successCallback">A callback called with information about the captcha image, if successful. </param>
-        public void SimpleGetCaptcha(string gameID, int width, int height, Callback<SimpleGetCaptchaOutput> successCallback)
+        /// <param name="successCallback"> A callback called with information about the captcha image, if successful. </param>
+        /// <param name="errorCallback"> A callback called instead of <paramref name="successCallback"/> when an error occurs during captcha retrieval. </param>
+        public void SimpleGetCaptcha(string gameID, int width, int height, Callback<SimpleGetCaptchaOutput> successCallback, Callback<PlayerIOError> errorCallback = null)
         {
-            var simpleGetCaptchaArgs = new SimpleGetCaptchaArgs {
+            var simpleGetCaptchaOutput = _channel.Request<SimpleGetCaptchaArgs, SimpleGetCaptchaOutput, PlayerIOError>(415, new SimpleGetCaptchaArgs {
                 GameId = gameID,
                 Width = width,
                 Height = height
-            };
+            }, errorCallback);
 
-            successCallback(_channel.Request<SimpleGetCaptchaArgs, SimpleGetCaptchaOutput, PlayerIOError>(415,
-                                                                                                 simpleGetCaptchaArgs));
+            if (simpleGetCaptchaOutput != null)
+                successCallback(simpleGetCaptchaOutput);
         }
     }
 }

@@ -11,7 +11,7 @@ using ProtoBuf;
 
 namespace PlayerIOClient.Helpers
 {
-    public partial class DatabaseObject : IEnumerable<KeyValuePair<string, object>>, IEnumerable
+    public partial class DatabaseObject : IEnumerable<KeyValuePair<string, object>>
     {
         public string Table { get; set; }
 
@@ -76,7 +76,7 @@ namespace PlayerIOClient.Helpers
         #region Get
         public object this[string propertyExpression] => this.Properties.Where(x => x.Key == propertyExpression).FirstOrDefault().Value.Value;
 
-        internal object this[string propertyExpression, ObjectType expectedType] => this.Properties.Where(x => x.Key == propertyExpression).FirstOrDefault().Value.Value ?? throw new Exception("Invalid Type");
+        internal object this[string propertyExpression, ObjectType expectedType] => this.Properties.FirstOrDefault(x => x.Key == propertyExpression).Value.Value ?? throw new Exception("Invalid Type");
 
         public bool GetBool(string propertyExpression) => (bool)this[propertyExpression, ObjectType.Bool];
 
@@ -123,7 +123,7 @@ namespace PlayerIOClient.Helpers
         public object GetValue(string propertyExpression, object defaultValue) =>
                     this.Properties.Any(property => property.Key == propertyExpression) ? this[propertyExpression] : defaultValue;
 
-        public DateTime GetDateTime(string propertyExpression) => (((long)this[propertyExpression]).FromUnixTime());
+        public DateTime GetDateTime(string propertyExpression) => ((long)this[propertyExpression]).FromUnixTime();
 
         public DateTime GetDateTime(string propertyExpression, DateTime defaultValue) =>
                     this.Properties.Any(property => property.Key == propertyExpression) ? ((long)this[propertyExpression, ObjectType.DateTime]).FromUnixTime() : defaultValue;

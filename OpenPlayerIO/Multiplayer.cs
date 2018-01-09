@@ -48,16 +48,15 @@ namespace PlayerIOClient
         /// </param>
         public Connection CreateJoinRoom(string roomId, string serverType, bool visible = true, Dictionary<string, string> roomData = null, Dictionary<string, string> joinData = null)
         {
-            var createJoinRoomArg = new CreateJoinRoomArgs {
+            var createJoinRoomOutput = _channel.Request<CreateJoinRoomArgs, CreateJoinRoomOutput, PlayerIOError>(27, new CreateJoinRoomArgs {
                 RoomId = roomId,
                 ServerType = serverType,
                 Visible = visible,
                 RoomData = Converter.Convert(roomData),
                 JoinData = Converter.Convert(joinData),
                 IsDevRoom = this.DevelopmentServer != null
-            };
+            });
 
-            var createJoinRoomOutput = _channel.Request<CreateJoinRoomArgs, CreateJoinRoomOutput, PlayerIOError>(27, createJoinRoomArg);
             var serverEndpoint = this.DevelopmentServer ?? Converter.Convert(createJoinRoomOutput.Endpoints[0]);
 
             return new Connection(serverEndpoint, createJoinRoomOutput.JoinKey, this.Proxy);
@@ -84,22 +83,17 @@ namespace PlayerIOClient
         /// <param name="errorCallback"> A callback called instead of <paramref name="successCallback"/> if an error occurs when creating and joining the room. </param>
         public void CreateJoinRoom(string roomId, string serverType, bool visible = true, Dictionary<string, string> roomData = null, Dictionary<string, string> joinData = null, Callback<Connection> successCallback = null, Callback<PlayerIOError> errorCallback = null)
         {
-            var createJoinRoomArg = new CreateJoinRoomArgs {
+            var createJoinRoomOutput = _channel.Request<CreateJoinRoomArgs, CreateJoinRoomOutput, PlayerIOError>(27, new CreateJoinRoomArgs {
                 RoomId = roomId,
                 ServerType = serverType,
                 Visible = visible,
                 RoomData = Converter.Convert(roomData),
                 JoinData = Converter.Convert(joinData),
                 IsDevRoom = this.DevelopmentServer != null
-            };
+            }, errorCallback);
 
-            var createJoinRoomOutput = _channel.Request<CreateJoinRoomArgs, CreateJoinRoomOutput, PlayerIOError>(27, createJoinRoomArg, errorCallback: errorCallback);
-            
-            if (createJoinRoomOutput != null) {
-                var serverEndpoint = this.DevelopmentServer ?? Converter.Convert(createJoinRoomOutput.Endpoints[0]);
-
-                successCallback(new Connection(serverEndpoint, createJoinRoomOutput.JoinKey, this.Proxy));
-            }
+            if (createJoinRoomOutput != null)
+                successCallback(new Connection(this.DevelopmentServer ?? Converter.Convert(createJoinRoomOutput.Endpoints[0]), createJoinRoomOutput.JoinKey, this.Proxy));
         }
 
         /// <summary> Joins a running multiplayer room. </summary>
@@ -109,13 +103,12 @@ namespace PlayerIOClient
         /// </param>
         public Connection JoinRoom(string roomId, Dictionary<string, string> joinData = null)
         {
-            var joinRoomArg = new JoinRoomArgs {
+            var joinRoomOutput = _channel.Request<JoinRoomArgs, JoinRoomOutput, PlayerIOError>(24, new JoinRoomArgs {
                 RoomId = roomId,
                 JoinData = Converter.Convert(joinData),
                 IsDevRoom = this.DevelopmentServer != null
-            };
+            });
 
-            var joinRoomOutput = _channel.Request<JoinRoomArgs, JoinRoomOutput, PlayerIOError>(24, joinRoomArg);
             var serverEndpoint = this.DevelopmentServer ?? Converter.Convert(joinRoomOutput.Endpoints[0]);
 
             return new Connection(serverEndpoint, joinRoomOutput.JoinKey, this.Proxy);
@@ -130,19 +123,53 @@ namespace PlayerIOClient
         /// <param name="errorCallback"> A callback called instead of <paramref name="successCallback"/> if an error occurs when joining the room. </param>
         public void JoinRoom(string roomId, Dictionary<string, string> joinData = null, Callback<Connection> successCallback = null, Callback<PlayerIOError> errorCallback = null)
         {
-            var joinRoomArg = new JoinRoomArgs {
+            var joinRoomOutput = _channel.Request<JoinRoomArgs, JoinRoomOutput, PlayerIOError>(24, new JoinRoomArgs {
                 RoomId = roomId,
                 JoinData = Converter.Convert(joinData),
                 IsDevRoom = this.DevelopmentServer != null
-            };
+            }, errorCallback);
 
-            var joinRoomOutput = _channel.Request<JoinRoomArgs, JoinRoomOutput, PlayerIOError>(24, joinRoomArg);
+            if (joinRoomOutput != null)
+                successCallback(new Connection(this.DevelopmentServer ?? Converter.Convert(joinRoomOutput.Endpoints[0]), joinRoomOutput.JoinKey, this.Proxy));
+        }
 
-            if (joinRoomOutput != null) {
-                var serverEndpoint = this.DevelopmentServer ?? Converter.Convert(joinRoomOutput.Endpoints[0]);
+        /// <summary> Create a multiplayer room on the Player.IO infrastructure. </summary>
+        /// <param name="roomId"> The id you wish to assign to your new room - You can use this to connect to the specific room later as long as it still exists. </param>
+        /// <param name="roomType"> The name of the room type you wish to run the room as. This value should match one of the [RoomType(...)] attributes of your uploaded code. A room type of 'bounce' is always available. </param>
+        /// <param name="visible"> Should the room be visible when listing rooms with ListRooms. </param>
+        /// <param name="roomData"> The data to initialize the room with, this can be read with ListRooms and changed from the serverside. </param>
+        public string CreateRoom(string roomId, string roomType, bool visible, Dictionary<string, string> roomData)
+        {
+            var createRoomOutput = _channel.Request<CreateRoomArgs, CreateRoomOutput, PlayerIOError>(21, new CreateRoomArgs {
+                RoomId = roomId,
+                RoomType = roomType,
+                Visible = visible,
+                RoomData = Converter.Convert(roomData),
+                IsDevRoom = this.DevelopmentServer != null
+            });
 
-                successCallback(new Connection(serverEndpoint, joinRoomOutput.JoinKey, this.Proxy));
-            }
+            return createRoomOutput.RoomId;
+        }
+
+        /// <summary> Create a multiplayer room on the Player.IO infrastructure. </summary>
+        /// <param name="roomId"> The id you wish to assign to your new room - You can use this to connect to the specific room later as long as it still exists. </param>
+        /// <param name="roomType"> The name of the room type you wish to run the room as. This value should match one of the [RoomType(...)] attributes of your uploaded code. A room type of 'bounce' is always available. </param>
+        /// <param name="visible"> Should the room be visible when listing rooms with ListRooms. </param>
+        /// <param name="roomData"> The data to initialize the room with, this can be read with ListRooms and changed from the serverside. </param>
+        /// <param name="successCallback"> A callback with the id of the room that was created. </param>
+        /// <param name="errorCallback"> A callback that will be called instead of successCallback if an error occurs during the room creation. </param>
+        public void CreateRoom(string roomId, string roomType, bool visible, Dictionary<string, string> roomData, Callback<string> successCallback, Callback<PlayerIOError> errorCallback = null)
+        {
+            var createRoomOutput = _channel.Request<CreateRoomArgs, CreateRoomOutput, PlayerIOError>(21, new CreateRoomArgs {
+                RoomId = roomId,
+                RoomType = roomType,
+                Visible = visible,
+                RoomData = Converter.Convert(roomData),
+                IsDevRoom = this.DevelopmentServer != null
+            }, errorCallback);
+
+            if (createRoomOutput != null)
+                successCallback(createRoomOutput.RoomId);
         }
 
         /// <summary> Lists the currently running multiplayer rooms. </summary>
@@ -160,14 +187,13 @@ namespace PlayerIOClient
         /// </param>
         public RoomInfo[] ListRooms(string roomType, Dictionary<string, string> searchCriteria = null, int resultLimit = 0, int resultOffset = 0, bool onlyDevRooms = false)
         {
-            var listRoomsArg = new ListRoomsArgs {
+            var listRoomsOutput = _channel.Request<ListRoomsArgs, ListRoomsOutput, PlayerIOError>(30, new ListRoomsArgs {
                 RoomType = roomType,
                 SearchCriteria = Converter.Convert(searchCriteria),
                 ResultLimit = resultLimit,
                 ResultOffset = resultOffset,
                 OnlyDevRooms = onlyDevRooms
-            };
-            var listRoomsOutput = _channel.Request<ListRoomsArgs, ListRoomsOutput, PlayerIOError>(30, listRoomsArg);
+            });
 
             return listRoomsOutput.RoomInfo ?? new RoomInfo[0];
         }
@@ -189,14 +215,13 @@ namespace PlayerIOClient
         /// <param name="errorCallback"> A callback called instead of <paramref name="successCallback"/> when an error occurs during the search. </param>
         public void ListRooms(string roomType, Dictionary<string, string> searchCriteria = null, int resultLimit = 0, int resultOffset = 0, bool onlyDevRooms = false, Callback<RoomInfo[]> successCallback = null, Callback<PlayerIOError> errorCallback = null)
         {
-            var listRoomsArg = new ListRoomsArgs {
+            var listRoomsOutput = _channel.Request<ListRoomsArgs, ListRoomsOutput, PlayerIOError>(30, new ListRoomsArgs {
                 RoomType = roomType,
                 SearchCriteria = Converter.Convert(searchCriteria),
                 ResultLimit = resultLimit,
                 ResultOffset = resultOffset,
                 OnlyDevRooms = onlyDevRooms
-            };
-            var listRoomsOutput = _channel.Request<ListRoomsArgs, ListRoomsOutput, PlayerIOError>(30, listRoomsArg);
+            }, errorCallback);
 
             if (listRoomsOutput != null)
                 successCallback(listRoomsOutput.RoomInfo ?? new RoomInfo[0]);

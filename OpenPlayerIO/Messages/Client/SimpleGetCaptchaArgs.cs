@@ -10,9 +10,9 @@ namespace PlayerIOClient.Messages.Client
 		public string GameId { get; set; }
 
 		[ProtoMember(2)]
-		public Int32 Width { get; set; }
+		public int Width { get; set; }
 
 		[ProtoMember(3)]
-		public Int32 Height { get; set; }
+		public int Height { get; set; }
 	}
 }

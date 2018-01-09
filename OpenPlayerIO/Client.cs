@@ -15,72 +15,62 @@ namespace PlayerIOClient
         /// The Player.IO Multiplayer Service 
         /// <para> . </para>
         /// </summary>
-        public Multiplayer Multiplayer => _multiplayer;
+        public Multiplayer Multiplayer { get; }
 
         /// <summary> The ConnectUserId of this client </summary>
-        public string ConnectUserId => _connectUserId;
+        public string ConnectUserId { get; }
 
         /// <summary> The Token of this client </summary>
-        public string Token => _token;
+        public string Token { get; }
 
         /// <summary>
         /// The Player.IO BigDB service 
         /// <para> . </para>
         /// </summary>
-        public BigDB BigDB => _bigdb;
+        public BigDB BigDB { get; }
 
         /// <summary>
         /// The Player.IO ErrorLog service 
         /// <para> . </para>
         /// </summary>
-        public ErrorLog ErrorLog => _errorlog;
+        public ErrorLog ErrorLog { get; }
 
         /// <summary>
         /// The Player.IO PayVault service 
         /// <para> . </para>
         /// </summary>
-        public PayVault PayVault => _payvault;
+        public PayVault PayVault { get; }
 
-        private readonly string _token;
-        private readonly string _connectUserId;
-        private readonly BigDB _bigdb;
-        private readonly PayVault _payvault;
         private readonly HttpChannel _channel;
-        private readonly ErrorLog _errorlog;
-        private readonly Multiplayer _multiplayer;
 
         private string _gameFSRedirectMap;
 
         internal Client(HttpChannel channel, string token, string connectUserId)
         {
-            _connectUserId = connectUserId;
-            _channel = channel;
-            _token = token;
-            _channel.SetToken(_token);
+            this.ConnectUserId = connectUserId;
+            this._channel = channel;
+            this.Token = token;
+            this._channel.SetToken(this.Token);
 
-            _errorlog = new ErrorLog(channel);
-            _payvault = new PayVault(channel);
-            _bigdb = new BigDB(channel);
-            _multiplayer = new Multiplayer(channel);
+            this.ErrorLog = new ErrorLog(channel);
+            this.PayVault = new PayVault(channel);
+            this.BigDB = new BigDB(channel);
+            this.Multiplayer = new Multiplayer(channel);
         }
 
         internal Client(HttpChannel channel, string gameId, string gameFSRedirectMap, string token, string connectUserId, bool showBranding, bool isSocialNetworkUser, object playerInsightState)
         {
-            _connectUserId = connectUserId;
-            _channel = channel;
-            _token = token;
-            _channel.SetToken(_token);
+            this.ConnectUserId = connectUserId;
+            this._channel = channel;
+            this.Token = token;
+            this._channel.SetToken(this.Token);
 
-            _errorlog = new ErrorLog(channel);
-            _payvault = new PayVault(channel);
-            _bigdb = new BigDB(channel);
-            _multiplayer = new Multiplayer(channel);
+            this.ErrorLog = new ErrorLog(channel);
+            this.PayVault = new PayVault(channel);
+            this.BigDB = new BigDB(channel);
+            this.Multiplayer = new Multiplayer(channel);
 
-            _gameFSRedirectMap = gameFSRedirectMap;
-            //_gameId = gameId;
-            //_showBranding = showBranding;
-            //_isSocialNetworkUser = isSocialNetworkUser;
-            //_playerInsightState = playerInsightState;
+            this._gameFSRedirectMap = gameFSRedirectMap;
         }
     }
 }

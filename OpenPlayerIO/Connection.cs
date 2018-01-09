@@ -46,9 +46,9 @@ namespace PlayerIOClient
         {
             _endpoint = endpoint;
             _joinKey = joinKey;
-            
+
             _socket = new ProxySocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            
+
             if (proxy != null) {
                 _socket.ProxyEndPoint = new IPEndPoint(IPAddress.Parse(proxy.Address), proxy.Port);
                 _socket.ProxyType = proxy.Type;
@@ -61,7 +61,6 @@ namespace PlayerIOClient
             }
 
             // TODO: check for functional non-transparent proxy connection per MultiplayerProxy.StrictProxyMode
-
             _socket.Connect(endpoint.Address, endpoint.Port);
 
             _stream = new NetworkStream(_socket);

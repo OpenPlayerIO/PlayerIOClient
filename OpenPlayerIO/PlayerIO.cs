@@ -75,13 +75,12 @@ namespace PlayerIOClient
         /// <param name="errorCallback"> A callback called instead of <paramref name="successCallback"/> when an error occurs during connection. </param>
         public static void Connect(string gameId, string connectionId, string userId, string auth = null, Callback<Client> successCallback = null, Callback<PlayerIOError> errorCallback = null)
         {
-            var connectArg = new ConnectArgs {
+            var connectOutput = Channel.Request<ConnectArgs, ConnectOutput, PlayerIOError>(10, new ConnectArgs {
                 GameId = gameId,
                 ConnectionId = connectionId,
                 UserId = userId,
                 Auth = auth
-            };
-            var connectOutput = Channel.Request<ConnectArgs, ConnectOutput, PlayerIOError>(10, connectArg);
+            }, errorCallback);
 
             if (connectOutput != null)
                 successCallback(new Client(Channel, connectOutput.Token, connectOutput.UserId));
@@ -113,7 +112,7 @@ namespace PlayerIOClient
         // Token: 0x06000D81 RID: 3457 RVA: 0x0002E500 File Offset: 0x0002C700
         public static Client Authenticate(string gameId, string connectionId, Dictionary<string, string> authenticationArguments = null, string[] playerInsightSegments = null)
         {
-            if (authenticationArguments != null && authenticationArguments.ContainsKey("secureSimpleUserPasswordsOverHttp") && authenticationArguments["secureSimpleUserPasswordsOverHttp"] == "true") {
+            if (authenticationArguments?.ContainsKey("secureSimpleUserPasswordsOverHttp") == true && authenticationArguments["secureSimpleUserPasswordsOverHttp"] == "true") {
                 var identifier = SimpleUserGetSecureLoginInfo();
                 authenticationArguments["password"] = PlayerIO.SimpleUserPasswordEncrypt(identifier.PublicKey, authenticationArguments["password"]);
                 authenticationArguments["nonce"] = identifier.Nonce;

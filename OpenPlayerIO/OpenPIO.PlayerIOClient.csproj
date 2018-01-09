@@ -123,12 +123,12 @@
     <Compile Include="Messages\Client\CreateJoinRoomOutput.cs" />
     <Compile Include="Messages\BigDB\CreateObjectsArgs.cs" />
     <Compile Include="Messages\BigDB\CreateObjectsOutput.cs" />
-    <Content Include="Messages\Unimplemented\CreateRoomArgs.cs" />
-    <Content Include="Messages\Unimplemented\CreateRoomOutput.cs" />
+    <Compile Include="Messages\Client\CreateRoomArgs.cs" />
+    <Compile Include="Messages\Client\CreateRoomOutput.cs" />
     <Content Include="Messages\Unimplemented\CreateTestAccountArgs.cs" />
     <Content Include="Messages\Unimplemented\CreateTestAccountOutput.cs" />
-    <Content Include="Messages\Unimplemented\DeleteIndexRangeArgs.cs" />
-    <Content Include="Messages\Unimplemented\DeleteIndexRangeOutput.cs" />
+    <Compile Include="Messages\BigDB\DeleteIndexRangeArgs.cs" />
+    <Compile Include="Messages\BigDB\DeleteIndexRangeOutput.cs" />
     <Compile Include="Messages\BigDB\DeleteObjectsArgs.cs" />
     <Compile Include="Messages\BigDB\DeleteObjectsOutput.cs" />
     <Compile Include="Messages\Client\FacebookOAuthConnectOutput.cs" />
@@ -221,8 +221,6 @@
     <Compile Include="Messages\Client\SimpleConnectOutput.cs" />
     <Compile Include="Messages\Client\SimpleGetCaptchaArgs.cs" />
     <Compile Include="Messages\Client\SimpleGetCaptchaOutput.cs" />
-    <Content Include="Messages\Unimplemented\SimpleRecoverPasswordArgs.cs" />
-    <Content Include="Messages\Unimplemented\SimpleRecoverPasswordOutput.cs" />
     <Compile Include="Messages\Client\SimpleRecoverPasswordArgs.cs" />
     <Compile Include="Messages\Client\SimpleRegisterArgs.cs" />
     <Compile Include="Messages\Client\SimpleRegisterOutput.cs" />

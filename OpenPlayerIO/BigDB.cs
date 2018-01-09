@@ -33,10 +33,10 @@ namespace PlayerIOClient
             var loadObjectsOutput = _channel.Request<LoadObjectsArgs, LoadObjectsOutput, PlayerIOError>(85, new LoadObjectsArgs {
                 ObjectIds = new BigDBObjectId { Table = table, Keys = keys }
             });
-            
+
             foreach (var obj in loadObjectsOutput.Objects)
                 obj.Table = table;
-            
+
             return loadObjectsOutput.Objects;
         }
 
@@ -50,10 +50,10 @@ namespace PlayerIOClient
         /// <param name="successCallback"> A callback containing the database objects found. </param>
         public DatabaseObject[] LoadRange(string table, string index, object[] indexPath, object start, object stop, int limit)
         {
-            var startIndex = indexPath.Select(value => BigDBObjectValue.Create(value)).ToList();
+            var startIndex = indexPath.Select(BigDBObjectValue.Create).ToList();
                 if (start != null) startIndex.Add(BigDBObjectValue.Create(start));
 
-            var stopIndex = indexPath.Select(value => BigDBObjectValue.Create(value)).ToList();
+            var stopIndex = indexPath.Select(BigDBObjectValue.Create).ToList();
                 if (stop != null) stopIndex.Add(BigDBObjectValue.Create(stop));
 
             var loadRangeOutput = _channel.Request<LoadIndexRangeArgs, LoadObjectsOutput, PlayerIOError>(97, new LoadIndexRangeArgs {

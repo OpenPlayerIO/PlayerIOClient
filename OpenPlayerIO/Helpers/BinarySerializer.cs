@@ -95,7 +95,6 @@ namespace PlayerIOClient.Helpers
         internal void DeserializeValue(byte value)
         {
             switch (State) {
-
                 #region State.Init
 
                 case State.Init:
@@ -380,8 +379,8 @@ namespace PlayerIOClient.Helpers
 
             internal static void WriteLongPattern(Pattern shortPattern, Pattern longPattern, byte[] bytes)
             {
-                int counter = 0;
-                for (int nc = 0; nc != 7; nc++) {
+                var counter = 0;
+                for (var nc = 0; nc != 7; nc++) {
                     if (bytes[nc] != 0) {
                         counter = 7 - nc;
                         break;

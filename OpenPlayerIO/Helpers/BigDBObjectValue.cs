@@ -43,7 +43,7 @@ namespace PlayerIOClient.Messages.BigDB
                 case DatabaseObject DatabaseObject:  return new BigDBObjectValue(ObjectType.DatabaseObject, DatabaseObject.Properties.ToArray());
                 case DatabaseObject[] DatabaseArray: return new BigDBObjectValue(ObjectType.DatabaseArray, DatabaseArray.SelectMany(p => p.Properties).ToArray());
 
-                default: throw new ArgumentException($"The type { value.GetType().FullName } is not supported.", "value");
+                default: throw new ArgumentException($"The type { value.GetType().FullName } is not supported.", nameof(value));
             }
         }
 

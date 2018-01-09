@@ -308,45 +308,20 @@ public class ProxySocket : Socket
             this.Close();
         ToThrow = error;
         AsyncResult.Reset();
-        if (CallBack != null)
-            CallBack(AsyncResult);
+        CallBack?.Invoke(AsyncResult);
     }
 
     /// <summary> Gets or sets the EndPoint of the proxy server. </summary>
     /// <value> An IPEndPoint object that holds the IP address and the port of the proxy server. </value>
-    public IPEndPoint ProxyEndPoint
-    {
-        get {
-            return m_ProxyEndPoint;
-        }
-        set {
-            m_ProxyEndPoint = value;
-        }
-    }
+    public IPEndPoint ProxyEndPoint { get; set; } = null;
 
     /// <summary> Gets or sets the type of proxy server to use. </summary>
     /// <value> One of the ProxyTypes values. </value>
-    public ProxyType ProxyType
-    {
-        get {
-            return m_ProxyType;
-        }
-        set {
-            m_ProxyType = value;
-        }
-    }
+    public ProxyType ProxyType { get; set; } = ProxyType.None;
 
     /// <summary> Gets or sets a user-defined object. </summary>
     /// <value> The user-defined object. </value>
-    private object State
-    {
-        get {
-            return m_State;
-        }
-        set {
-            m_State = value;
-        }
-    }
+    private object State { get; set; }
 
     /// <summary> Gets or sets the username to use when authenticating with the proxy. </summary>
     /// <value> A string that holds the username that's used when authenticating with the proxy. </value>
@@ -357,9 +332,7 @@ public class ProxySocket : Socket
             return m_ProxyUser;
         }
         set {
-            if (value == null)
-                throw new ArgumentNullException();
-            m_ProxyUser = value;
+            m_ProxyUser = value ?? throw new ArgumentNullException();
         }
     }
 
@@ -372,57 +345,21 @@ public class ProxySocket : Socket
             return m_ProxyPass;
         }
         set {
-            if (value == null)
-                throw new ArgumentNullException();
-            m_ProxyPass = value;
+            m_ProxyPass = value ?? throw new ArgumentNullException();
         }
     }
 
     /// <summary> Gets or sets the asynchronous result object. </summary>
     /// <value> An instance of the IAsyncProxyResult class. </value>
-    private IAsyncProxyResult AsyncResult
-    {
-        get {
-            return m_AsyncResult;
-        }
-        set {
-            m_AsyncResult = value;
-        }
-    }
+    private IAsyncProxyResult AsyncResult { get; set; }
 
     /// <summary> Gets or sets the exception to throw when the EndConnect method is called. </summary>
     /// <value> An instance of the Exception class (or subclasses of Exception). </value>
-    private Exception ToThrow
-    {
-        get {
-            return m_ToThrow;
-        }
-        set {
-            m_ToThrow = value;
-        }
-    }
+    private Exception ToThrow { get; set; } = null;
 
     /// <summary> Gets or sets the remote port the user wants to connect to. </summary>
     /// <value> An integer that specifies the port the user wants to connect to. </value>
-    private int RemotePort
-    {
-        get {
-            return m_RemotePort;
-        }
-        set {
-            m_RemotePort = value;
-        }
-    }
-
-    // private variables
-    /// <summary> Holds the value of the State property. </summary>
-    private object m_State;
-
-    /// <summary> Holds the value of the ProxyEndPoint property. </summary>
-    private IPEndPoint m_ProxyEndPoint = null;
-
-    /// <summary> Holds the value of the ProxyType property. </summary>
-    private ProxyType m_ProxyType = ProxyType.None;
+    private int RemotePort { get; set; }
 
     /// <summary> Holds the value of the ProxyUser property. </summary>
     private string m_ProxyUser = null;
@@ -435,13 +372,4 @@ public class ProxySocket : Socket
     /// remote device.
     /// </summary>
     private AsyncCallback CallBack = null;
-
-    /// <summary> Holds the value of the AsyncResult property. </summary>
-    private IAsyncProxyResult m_AsyncResult;
-
-    /// <summary> Holds the value of the ToThrow property. </summary>
-    private Exception m_ToThrow = null;
-
-    /// <summary> Holds the value of the RemotePort property. </summary>
-    private int m_RemotePort;
 }

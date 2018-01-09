@@ -1,7 +1,7 @@
 using PlayerIOClient.Helpers;
 using ProtoBuf;
 
-namespace PlayerIOClient.Messages.Unimplemented
+namespace PlayerIOClient.Messages.Client
 {
 	[ProtoContract]
 	internal class CreateRoomArgs
@@ -16,7 +16,7 @@ namespace PlayerIOClient.Messages.Unimplemented
 		public bool Visible { get; set; }
 
 		[ProtoMember(4)]
-		public Message RoomData { get; set; }
+		public KeyValuePair[] RoomData { get; set; }
 
 		[ProtoMember(5)]
 		public bool IsDevRoom { get; set; }
