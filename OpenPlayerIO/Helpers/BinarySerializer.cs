@@ -256,6 +256,7 @@ namespace PlayerIOClient.Helpers
                                 OnDeserializedValue(BitConverter.ToSingle(length.ToArray(), 0));
                                 break;
 
+                            case Pattern.BYTE_ARRAY_SHORT_PATTERN:
                             case Pattern.BYTE_ARRAY_PATTERN:
                                 OnDeserializedValue(_buffer.ToArray());
                                 break;
