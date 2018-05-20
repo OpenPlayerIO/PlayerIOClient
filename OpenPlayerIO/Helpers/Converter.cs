@@ -11,9 +11,8 @@ namespace PlayerIOClient.Helpers
         {
             var keyValuePairs = new List<KeyValuePair>();
 
-            if (dict != null) {
-                keyValuePairs.AddRange((from kvp in dict select new KeyValuePair { Key = kvp.Key, Value = kvp.Value }));
-            }
+            if (dict != null)
+                keyValuePairs.AddRange(from kvp in dict select new KeyValuePair { Key = kvp.Key, Value = kvp.Value });
 
             return keyValuePairs.ToArray();
         }
@@ -23,9 +22,8 @@ namespace PlayerIOClient.Helpers
             var dict = new Dictionary<string, string>();
 
             if (keyValuePair != null) {
-                foreach (var valuePair in keyValuePair) {
+                foreach (var valuePair in keyValuePair)
                     dict[valuePair.Key] = valuePair.Value;
-                }
             }
 
             return dict;

@@ -103,13 +103,11 @@ namespace PlayerIOClient
             }
         }
 
-        // PlayerIOClient.PlayerIO
         /// <summary>Connects to Player.IO using as the given user</summary>
         /// <param name="gameId">The game id of the game you wish to connect to. This value can be found in the admin panel</param>
         /// <param name="connectionId">The id of the connection, as given in the settings section of the admin panel. 'public' should be used as the default</param>
         /// <param name="authenticationArguments">A dictionary of arguments for the given connection.</param>
         /// <param name="playerInsightSegments">Custom segments for the user in PlayerInsight.</param>
-        // Token: 0x06000D81 RID: 3457 RVA: 0x0002E500 File Offset: 0x0002C700
         public static Client Authenticate(string gameId, string connectionId, Dictionary<string, string> authenticationArguments = null, string[] playerInsightSegments = null)
         {
             if (authenticationArguments?.ContainsKey("secureSimpleUserPasswordsOverHttp") == true && authenticationArguments["secureSimpleUserPasswordsOverHttp"] == "true") {
@@ -169,7 +167,6 @@ namespace PlayerIOClient
             return "csharp";
         }
 
-        // Token: 0x06000D88 RID: 3464 RVA: 0x0002E6A8 File Offset: 0x0002C8A8
         internal static Dictionary<string, string> GetClientInfo()
         {
             var dictionary = new Dictionary<string, string>();

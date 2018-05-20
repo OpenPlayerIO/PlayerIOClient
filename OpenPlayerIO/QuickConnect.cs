@@ -266,10 +266,10 @@ namespace PlayerIOClient
         /// <param name="gameId"> The ID of the game you wish to register to. </param>
         /// <param name="width"> The width of the captcha image. </param>
         /// <param name="height"> The height of the captcha image. </param>
-        public SimpleGetCaptchaOutput SimpleGetCaptcha(string gameID, int width, int height)
+        public SimpleGetCaptchaOutput SimpleGetCaptcha(string gameId, int width, int height)
         {
             return _channel.Request<SimpleGetCaptchaArgs, SimpleGetCaptchaOutput, PlayerIOError>(415, new SimpleGetCaptchaArgs {
-                GameId = gameID,
+                GameId = gameId,
                 Width = width,
                 Height = height
             });

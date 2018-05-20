@@ -30,15 +30,15 @@ namespace PlayerIOClient.Messages.BigDB
         public static BigDBObjectValue Create(object value)
         {
             switch (value) {
-                case string _: return new BigDBObjectValue(ObjectType.String, value);
-                case int _:    return new BigDBObjectValue(ObjectType.Int, value);
-                case uint _:   return new BigDBObjectValue(ObjectType.UInt, value);
-                case long _:   return new BigDBObjectValue(ObjectType.Long, value);
-                case float _:  return new BigDBObjectValue(ObjectType.Float, value);
-                case double _: return new BigDBObjectValue(ObjectType.Double, value);
-                case bool _:   return new BigDBObjectValue(ObjectType.Bool, value);
-                case byte[] _: return new BigDBObjectValue(ObjectType.ByteArray, value);
-
+                case string temp:   return new BigDBObjectValue(ObjectType.String, value);
+                case int    temp:   return new BigDBObjectValue(ObjectType.Int, value);
+                case uint   temp:   return new BigDBObjectValue(ObjectType.UInt, value);
+                case long   temp:   return new BigDBObjectValue(ObjectType.Long, value);
+                case float  temp:   return new BigDBObjectValue(ObjectType.Float, value);
+                case double temp:   return new BigDBObjectValue(ObjectType.Double, value);
+                case bool   temp:   return new BigDBObjectValue(ObjectType.Bool, value);
+                case byte[] temp:   return new BigDBObjectValue(ObjectType.ByteArray, value);
+                
                 case DateTime DateTime:              return new BigDBObjectValue(ObjectType.DateTime, DateTime.ToUnixTime());
                 case DatabaseObject DatabaseObject:  return new BigDBObjectValue(ObjectType.DatabaseObject, DatabaseObject.Properties.ToArray());
                 case DatabaseObject[] DatabaseArray: return new BigDBObjectValue(ObjectType.DatabaseArray, DatabaseArray.SelectMany(p => p.Properties).ToArray());

@@ -15,17 +15,20 @@ namespace PlayerIOClient
     public class Message : IEnumerable<object>
     {
         private readonly List<Tuple<object, MessageType>> Values = new List<Tuple<object, MessageType>>();
-        public string Type { get; private set; } = "";
-        public int Count => Values.Count();
+        public string Type { get; } = "";
+        public int Count => Values.Count;
 
         /// <summary> Creates a new Message. </summary>
         /// <param name="type"> The type of message to create. </param>
         /// <param name="parameters"> A list of the data to add to the message. </param>
         public Message(string type, params object[] parameters)
         {
-            Type = type;
+            this.Type = type;
             Add(parameters);
         }
+
+        public static Message Create(string type, params object[] parameters)
+            => new Message(type, parameters);
 
         #region Get
 
@@ -42,9 +45,19 @@ namespace PlayerIOClient
             return (string)this[index];
         }
 
+        public int GetInt(uint index)
+        {
+            return (int)this[index];
+        }
+
         public int GetInteger(uint index)
         {
             return (int)this[index];
+        }
+
+        public uint GetUInt(uint index)
+        {
+            return (uint)this[index];
         }
 
         public uint GetUInteger(uint index)
@@ -90,27 +103,6 @@ namespace PlayerIOClient
 
         public void Add(object obj)
         {
-            switch ((System.Type.GetTypeCode(obj.GetType()))) {
-                case TypeCode.String:
-                    break;
-                case TypeCode.Int32:
-                    break;
-                case TypeCode.Int64:
-                    break;
-                case TypeCode.Boolean:
-                    break;
-                case TypeCode.Single:
-                    break;
-                case TypeCode.Double:
-                    break;
-                case TypeCode.UInt32:
-                    break;
-                case TypeCode.UInt64:
-                    break;
-                case TypeCode.Object:
-                    break;
-            }
-
             if (obj == null) {
                 throw new ArgumentNullException(ParameterNullText);
             }
@@ -151,7 +143,7 @@ namespace PlayerIOClient
         public void Add(string parameter)
         {
             if (parameter == null) {
-                throw new ArgumentNullException("parameter", ParameterNullText);
+                throw new ArgumentNullException(nameof(parameter), ParameterNullText);
             }
             Values.Add(Tuple.Create((object)parameter, MessageType.String));
         }
@@ -178,9 +170,9 @@ namespace PlayerIOClient
 
         public void Add(byte[] parameter)
         {
-            if (parameter == null) {
-                throw new ArgumentNullException("parameter", ParameterNullText);
-            }
+            if (parameter == null)
+                throw new ArgumentNullException(nameof(parameter), ParameterNullText);
+
             Values.Add(Tuple.Create((object)parameter, MessageType.ByteArray));
         }
 
@@ -206,11 +198,10 @@ namespace PlayerIOClient
         public override string ToString()
         {
             var sb = new StringBuilder("");
-            sb.AppendLine(string.Concat("  msg.Type= ", Type, ", ", Count, " entries"));
+            sb.AppendLine(string.Concat("  msg.Type= ", this.Type, ", ", this.Count, " entries"));
 
-            for (int i = 0; i < Values.Count; i++) {
+            for (var i = 0; i < Values.Count; i++)
                 sb.AppendLine(string.Concat("  msg[", i, "] = ", Values[i].Item1, "  (", Values[i].Item2, ")"));
-            }
 
             return sb.ToString();
         }

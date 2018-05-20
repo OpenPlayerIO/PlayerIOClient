@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Collections.Generic;
 using PlayerIOClient.Error;
 using PlayerIOClient.Helpers;
 using PlayerIOClient.Messages.PayVault;
@@ -8,7 +8,7 @@ namespace PlayerIOClient
 {
     public class PayVault
     {
-        private HttpChannel _channel;
+        private readonly HttpChannel _channel;
 
         public PayVaultItem[] Items { get; set; }
         public string Version { get; set; }

@@ -66,9 +66,9 @@ namespace PlayerIOClient.Helpers
             _partLength = 0;
 
             OnDeserializedValue += (value) => {
-                if (_length == -1)
+                if (_length == -1) {
                     _length = (int)value;
-                else {
+                } else {
                     if (_message == null)
                         _message = new Message((string)value);
                     else
@@ -358,7 +358,7 @@ namespace PlayerIOClient.Helpers
             }
         }
 
-        private class Writer
+        private static class Writer
         {
             internal static void WriteTagWithLength(int length, Pattern topPattern, Pattern bottomPattern)
             {
@@ -410,7 +410,7 @@ namespace PlayerIOClient.Helpers
         }
     }
 
-    internal class LittleEndianToNetworkOrderBitConverter
+    internal static class LittleEndianToNetworkOrderBitConverter
     {
         public static byte[] GetBytes(int value) => ReverseArray(BitConverter.GetBytes(value), 4, 0);
 

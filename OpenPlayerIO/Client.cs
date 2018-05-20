@@ -43,7 +43,7 @@ namespace PlayerIOClient
 
         private readonly HttpChannel _channel;
 
-        private string _gameFSRedirectMap;
+        private readonly string _gameFSRedirectMap;
 
         internal Client(HttpChannel channel, string token, string connectUserId)
         {

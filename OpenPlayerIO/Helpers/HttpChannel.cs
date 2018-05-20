@@ -109,8 +109,8 @@ namespace PlayerIOClient.Helpers
     {
         internal static byte[] ReadAllBytes(this Stream instream)
         {
-            if (instream is MemoryStream)
-                return ((MemoryStream)instream).ToArray();
+            if (instream is MemoryStream memoryStream2)
+                return (memoryStream2).ToArray();
 
             using (var memoryStream = new MemoryStream()) {
                 instream.CopyTo(memoryStream);
