@@ -317,11 +317,11 @@ public class ProxySocket : Socket
 
     /// <summary> Gets or sets the type of proxy server to use. </summary>
     /// <value> One of the ProxyTypes values. </value>
-    public ProxyType ProxyType { get; set; } = ProxyType.None;
+    public ProxyType ProxyType { get; set; }
 
     /// <summary> Gets or sets a user-defined object. </summary>
     /// <value> The user-defined object. </value>
-    private object State { get; set; }
+    private object State { get; }
 
     /// <summary> Gets or sets the username to use when authenticating with the proxy. </summary>
     /// <value> A string that holds the username that's used when authenticating with the proxy. </value>

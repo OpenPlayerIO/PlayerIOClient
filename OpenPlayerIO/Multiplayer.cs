@@ -24,6 +24,7 @@ namespace PlayerIOClient
         public MultiplayerProxy Proxy { get; set; }
 
         private readonly HttpChannel _channel;
+
         internal Multiplayer(HttpChannel channel)
         {
             _channel = channel;

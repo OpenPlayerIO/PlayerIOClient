@@ -66,9 +66,9 @@ namespace PlayerIOClient
             var output = _channel.Request<PayVaultRefreshArgs, PayVaultRefreshOutput, PlayerIOError>(163,
                 new PayVaultRefreshArgs());
 
-            Version = output.VaultContents.Version;
-            Items = output.VaultContents.Items;
-            Coins = output.VaultContents.Coins;
+            this.Version = output.VaultContents.Version;
+            this.Items = output.VaultContents.Items;
+            this.Coins = output.VaultContents.Coins;
 
             return output;
         }

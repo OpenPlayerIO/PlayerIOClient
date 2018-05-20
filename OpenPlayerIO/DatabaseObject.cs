@@ -74,7 +74,7 @@ namespace PlayerIOClient.Helpers
         #endregion
 
         #region Get
-        public object this[string propertyExpression] => this.Properties.Where(x => x.Key == propertyExpression).FirstOrDefault().Value.Value;
+        public object this[string propertyExpression] => this.Properties.FirstOrDefault(x => x.Key == propertyExpression).Value.Value;
 
         internal object this[string propertyExpression, ObjectType expectedType] => this.Properties.FirstOrDefault(x => x.Key == propertyExpression).Value.Value ?? throw new Exception("Invalid Type");
 

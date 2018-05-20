@@ -103,9 +103,7 @@ internal abstract class SocksHandler
             return m_Server;
         }
         set {
-            if (value == null)
-                throw new ArgumentNullException();
-            m_Server = value;
+            m_Server = value ?? throw new ArgumentNullException();
         }
     }
 
@@ -118,35 +116,17 @@ internal abstract class SocksHandler
             return m_Username;
         }
         set {
-            if (value == null)
-                throw new ArgumentNullException();
-            m_Username = value;
+            m_Username = value ?? throw new ArgumentNullException();
         }
     }
 
     /// <summary> Gets or sets the return value of the BeginConnect call. </summary>
     /// <value> An IAsyncProxyResult object that is the return value of the BeginConnect call. </value>
-    protected IAsyncProxyResult AsyncResult
-    {
-        get {
-            return m_AsyncResult;
-        }
-        set {
-            m_AsyncResult = value;
-        }
-    }
+    protected IAsyncProxyResult AsyncResult { get; set; }
 
     /// <summary> Gets or sets a byte buffer. </summary>
     /// <value> An array of bytes. </value>
-    protected byte[] Buffer
-    {
-        get {
-            return m_Buffer;
-        }
-        set {
-            m_Buffer = value;
-        }
-    }
+    protected byte[] Buffer { get; set; }
 
     /// <summary>
     /// Gets or sets the number of bytes that have been received from the remote proxy server.
@@ -170,12 +150,6 @@ internal abstract class SocksHandler
 
     /// <summary> Holds the value of the Username property. </summary>
     private string m_Username;
-
-    /// <summary> Holds the value of the AsyncResult property. </summary>
-    private IAsyncProxyResult m_AsyncResult;
-
-    /// <summary> Holds the value of the Buffer property. </summary>
-    private byte[] m_Buffer;
 
     /// <summary> Holds the value of the Received property. </summary>
     private int m_Received;

@@ -38,8 +38,15 @@ namespace PlayerIOClient
         private readonly byte[] _buffer = new byte[65536];
         private readonly string _joinKey;
 
-        public void Send(string type, params object[] parameters) => _socket.Send(_serializer.Serialize(new Message(type, parameters)));
+        /// <summary> Send a message to the connected client. </summary>
+        /// <param name="message"> The message to send. </param>
+        public void Send(Message message) => _socket.Send(_serializer.Serialize(message));
 
+        /// <summary> Send a message to the connected client without first having to construct a Message object. </summary>
+        /// <param name="type"> The message type to send. </param>
+        /// <param name="parameters"> The values to place in the message to send. </param>
+        public void Send(string type, params object[] parameters) => _socket.Send(_serializer.Serialize(new Message(type, parameters)));
+        
         public void Disconnect() => Terminate(new Exception("Connection forcefully closed by client."));
 
         public Connection(ServerEndpoint endpoint, string joinKey, MultiplayerProxy proxy = null)
@@ -90,9 +97,8 @@ namespace PlayerIOClient
             var length = _stream.EndRead(ar);
             var received = _buffer.Take(length).ToArray();
 
-            if (length == 0) {
+            if (length == 0)
                 Terminate(new Exception("Connection unexpectedly terminated. (receivedBytes == 0)"));
-            }
 
             _deserializer.AddBytes(received);
             _stream.BeginRead(_buffer, 0, _buffer.Length, new AsyncCallback(this.ReceiveCallback), null);
@@ -106,11 +112,9 @@ namespace PlayerIOClient
 
             this.Connected = false;
 
-            if (OnDisconnect != null) {
+            if (OnDisconnect != null)
                 OnDisconnect?.Invoke(this, exception.Message);
-            } else {
-                throw new PlayerIOError(ErrorCode.InternalError, string.Concat(new object[] { "Connection from ", _endpoint.Address, " was closed. ", ", message: ", exception.Message }));
-            }
+            else throw new PlayerIOError(ErrorCode.InternalError, string.Concat(new[] { "Connection from ", _endpoint.Address, " was closed. ", ", message: ", exception.Message }));
         }
     }
 }
