@@ -34,6 +34,9 @@ namespace PlayerIOClient
 
         public object Item(uint index)
         {
+            if (index > this.Count)
+                throw new IndexOutOfRangeException($"This message ({ this.Type }) only has { this.Count } entries.");
+
             return Values[(int)index].Item1;
         }
 
