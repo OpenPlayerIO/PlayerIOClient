@@ -1,4 +1,4 @@
-# PlayerIOClient [![Build status](https://ci.appveyor.com/api/projects/status/9tk7vrpboxu2lleu?svg=true)](https://ci.appveyor.com/project/atillabyte/playerioclient)
+# PlayerIOClient [![Build status](https://ci.appveyor.com/api/projects/status/9tk7vrpboxu2lleu?svg=true)](https://ci.appveyor.com/project/atillabyte/playerioclient) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FOpenPlayerIO%2FPlayerIOClient.svg?type=small)](https://app.fossa.io/projects/git%2Bgithub.com%2FOpenPlayerIO%2FPlayerIOClient?ref=badge_small)
 An open-source alternative to PlayerIOClient.
 
 ###### NOTE: You can find the latest binaries at the AppVeyor artifacts section [here](https://ci.appveyor.com/project/atillabyte/playerioclient/build/artifacts).
