@@ -31,7 +31,7 @@ namespace PlayerIOClient.Helpers
         BOOLEAN_TRUE_PATTERN = 0x01,
         BOOLEAN_FALSE_PATTERN = 0x00,
 
-        DOES_NOT_EXIST = 0xFF
+        DOES_NOT_EXIST = -1
     }
 
     internal enum State
