@@ -80,9 +80,8 @@ namespace PlayerIOClient
 
             OnMessage += (sender, message) => {
                 if (message.Type == "playerio.joinresult") {
-                    if (!message.GetBoolean(0)) {
+                    if (!message.GetBoolean(0))
                         throw new PlayerIOError((ErrorCode)message.GetInteger(1), message.GetString(2));
-                    }
 
                     this.Connected = true;
                 }

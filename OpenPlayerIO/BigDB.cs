@@ -29,12 +29,16 @@ namespace PlayerIOClient
 
         public DatabaseObject[] Load(string table, string[] keys)
         {
+			if (keys == null || keys.Length == 0) {
+				throw new PlayerIOError(ErrorCode.GeneralError, "You must specify at least one key to load");
+			}
+			
             var loadObjectsOutput = _channel.Request<LoadObjectsArgs, LoadObjectsOutput, PlayerIOError>(85, new LoadObjectsArgs {
                 ObjectIds = new BigDBObjectId { Table = table, Keys = keys }
             });
 
 			if (loadObjectsOutput.Objects == null)
-				throw new PlayerIOError(ErrorCode.BigDBObjectDoesNotExist, "The database key that was requested did not exist in the database.");
+				throw new PlayerIOError(ErrorCode.BigDBObjectDoesNotExist, "Could not locate the database object with the key provided.");
 
             foreach (var obj in loadObjectsOutput.Objects)
                 obj.Table = table;
