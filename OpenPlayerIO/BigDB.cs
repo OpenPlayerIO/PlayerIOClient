@@ -33,6 +33,9 @@ namespace PlayerIOClient
                 ObjectIds = new BigDBObjectId { Table = table, Keys = keys }
             });
 
+			if (loadObjectsOutput.Objects == null)
+				throw new PlayerIOError(ErrorCode.BigDBObjectDoesNotExist, "The database key that was requested did not exist in the database.");
+
             foreach (var obj in loadObjectsOutput.Objects)
                 obj.Table = table;
 
