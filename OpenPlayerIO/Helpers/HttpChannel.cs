@@ -18,7 +18,7 @@ namespace PlayerIOClient.Helpers
         {
             var r = default(TResponse);
             var request = GetRequest(method);
-            var wc = new WebClient { Proxy = null };
+            //var wc = new WebClient { Proxy = null }; //never used so it's useless
 
             using (var requestStream = request.GetRequestStream()) {
                 Serializer.Serialize(requestStream, args);

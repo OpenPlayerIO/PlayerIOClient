@@ -36,6 +36,18 @@ namespace PlayerIOClient.Helpers
 
         internal object ToDictionary(object input)
         {
+            if (input == null) return null; //null checking for special scenarios
+            if (input is KeyValuePair<string, string> kvp && (kvp.Key == null || kvp.Value == null)) return null;
+            if (input is BigDBObjectValue bdbov && bdbov.Value == null)
+                switch(bdbov.Type) { //return special nulls
+                    default:
+                        return null;
+                    case ObjectType.DatabaseObject:
+                        return new DatabaseObject();
+                    case ObjectType.DatabaseArray:
+                        return new DatabaseArray();
+                }
+
             var dictionary = new System.Dynamic.ExpandoObject() as IDictionary<string, object>;
 
             switch (input) {
@@ -46,6 +58,10 @@ namespace PlayerIOClient.Helpers
                 case BigDBObjectValue objectValue:
                     switch (objectValue.Type) {
                         case ObjectType.DatabaseArray:
+                            var array = new object[objectValue.ValueArray.Length];
+                            for (var i = 0; i < objectValue.ValueArray.Length; i++)
+                                array[i] = ToDictionary(objectValue.ValueArray[i].Value);
+                            return array;
                         case ObjectType.DatabaseObject:
                             foreach (var property in (dynamic)objectValue.Value)
                                 dictionary.Add(property.Key.ToString(), ToDictionary(property.Value));
@@ -60,10 +76,7 @@ namespace PlayerIOClient.Helpers
         }
 
         #region Methods
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(ToDictionary(this), Formatting.Indented);
-        }
+        public override string ToString() => JsonConvert.SerializeObject(ToDictionary(this), Formatting.Indented);
 
         public bool Contains(string propertyExpression) => this.Properties.Any(property => property.Key == propertyExpression);
 
