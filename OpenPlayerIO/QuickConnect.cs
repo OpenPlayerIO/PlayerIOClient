@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using PlayerIOClient.Error;
 using PlayerIOClient.Helpers;
 using PlayerIOClient.Messages;
@@ -259,6 +261,109 @@ namespace PlayerIOClient
                 UsernameOrEmail = usernameOrEmail
             });
         }
+
+        public bool SimpleChangeEmailByUsername(string gameId, string connectionId, string currentUsername, string currentPassword, string newEmail, out string requestResponseMessage) =>
+            this.SimpleChangeEmail(gameId, connectionId, "username", currentUsername, currentPassword, newEmail, out requestResponseMessage);
+
+        public bool SimpleChangeEmailByEmail(string gameId, string connectionId, string currentEmail, string currentPassword, string newEmail, out string requestResponseMessage) =>
+            this.SimpleChangeEmail(gameId, connectionId, "email", currentEmail, currentPassword, newEmail, out requestResponseMessage);
+
+        public bool SimpleChangePasswordByUsername(string gameId, string connectionId, string currentUsername, string currentPassword, string newPassword, out string requestResponseMessage) =>
+            this.SimpleChangePassword(gameId, connectionId, "username", currentUsername, currentPassword, newPassword, out requestResponseMessage);
+
+        public bool SimpleChangePasswordByEmail(string gameId, string connectionId, string currentEmail, string currentPassword, string newPassword, out string requestResponseMessage) =>
+            this.SimpleChangePassword(gameId, connectionId, "email", currentEmail, currentPassword, newPassword, out requestResponseMessage);
+
+        #region Authenticate
+        internal bool SimpleChangePassword(string gameId, string connectionId, string connectionType, string currentUsernameOrEmail, string currentPassword, string newPassword, out string requestResponse)
+        {
+            var requestFinished = false;
+            var changeSuccessful = false;
+            var playerIOError = default(PlayerIOError);
+
+            _channel.Request<AuthenticateArgs, NoArgsOrOutput, PlayerIOError>(13, new AuthenticateArgs
+            {
+                GameId = gameId,
+                ClientAPI = PlayerIO.GetClientAPI(),
+                ConnectionId = connectionId,
+                AuthenticationArguments = new KeyValuePair[] {
+                    new KeyValuePair() { Key = connectionType, Value = currentUsernameOrEmail },
+                    new KeyValuePair() { Key = "password", Value = currentPassword },
+                    new KeyValuePair() { Key = "changepassword", Value = "true" },
+                    new KeyValuePair() { Key = "newpassword", Value = newPassword }
+                }
+            }, new Callback<PlayerIOError>((error) => {
+                if (error.ErrorCode == ErrorCode.GeneralError && error.Message.ToLower().Contains("email address changed"))
+                    changeSuccessful = true;
+
+                playerIOError = error;
+                requestFinished = true;
+            }));
+
+            // this is really sloppy and could be improved, but it's quick and easy...
+            // and the same description would generally apply to Player.IO as a whole :wink:
+            // - atillabyte
+
+            requestResponse = playerIOError?.Message ?? "";
+
+            var requestTimeout = 0;
+            while (!requestFinished && ++requestTimeout <= 10000 / 100)
+                Thread.Sleep(100);
+
+            if (!requestFinished)
+                throw new Exception("The email change request timed out without returning a response.");
+
+            if (requestFinished && changeSuccessful)
+                return true;
+
+            return false;
+        }
+
+        internal bool SimpleChangeEmail(string gameId, string connectionId, string connectionType, string currentUsernameOrEmail, string currentPassword, string newEmail, out string requestResponse)
+        {
+            var requestFinished = false;
+            var changeSuccessful = false;
+            var playerIOError = default(PlayerIOError);
+
+            _channel.Request<AuthenticateArgs, NoArgsOrOutput, PlayerIOError>(13, new AuthenticateArgs
+            {
+                GameId = gameId,
+                ClientAPI = PlayerIO.GetClientAPI(),
+                ConnectionId = connectionId,
+                AuthenticationArguments = new KeyValuePair[] {
+                    new KeyValuePair() { Key = connectionType, Value = currentUsernameOrEmail },
+                    new KeyValuePair() { Key = "password", Value = currentPassword },
+                    new KeyValuePair() { Key = "changeemail", Value = "true" },
+                    new KeyValuePair() { Key = "newemail", Value = newEmail }
+                }
+            }, new Callback<PlayerIOError>((error) => {
+                if (error.ErrorCode == ErrorCode.GeneralError && error.Message.ToLower().Contains("email address changed"))
+                    changeSuccessful = true;
+                
+                playerIOError = error;
+                requestFinished = true;
+            }));
+
+            // this is really sloppy and could be improved, but it's quick and easy...
+            // and the same description would generally apply to Player.IO as a whole :wink:
+            // - atillabyte
+
+            requestResponse = playerIOError?.Message ?? "";
+
+            var requestTimeout = 0;
+            while (!requestFinished && ++requestTimeout <= 10000/100)
+                Thread.Sleep(100);
+
+            if (!requestFinished)
+                throw new Exception("The email change request timed out without returning a response.");
+
+            if (requestFinished && changeSuccessful)
+                return true;
+
+            return false;
+        }
+
+        #endregion
 
         /// <summary>
         /// Retrieves a key and captcha image URI, to be used for registrations where the added security of captchas are required.

@@ -29,10 +29,9 @@ namespace PlayerIOClient
 
         public DatabaseObject[] Load(string table, string[] keys)
         {
-			if (keys == null || keys.Length == 0) {
+			if (keys == null || keys.Length == 0)
 				throw new PlayerIOError(ErrorCode.GeneralError, "You must specify at least one key to load");
-			}
-			
+
             var loadObjectsOutput = _channel.Request<LoadObjectsArgs, LoadObjectsOutput, PlayerIOError>(85, new LoadObjectsArgs {
                 ObjectIds = new BigDBObjectId { Table = table, Keys = keys }
             });
@@ -56,6 +55,9 @@ namespace PlayerIOClient
         /// <param name="successCallback"> A callback containing the database objects found. </param>
         public DatabaseObject[] LoadRange(string table, string index, object[] indexPath, object start, object stop, int limit)
         {
+            if (indexPath == null)
+                indexPath = new object[] { };
+
             var startIndex = indexPath.Select(BigDBObjectValue.Create).ToList();
                 if (start != null) startIndex.Add(BigDBObjectValue.Create(start));
 

@@ -18,6 +18,7 @@ namespace PlayerIOClient
         private static readonly HttpChannel Channel = new HttpChannel();
         public static QuickConnect QuickConnect => _quickConnect.Value;
 
+        public static bool UseProxyForAPIRequests = false;
         public static bool UseSecureApiRequests = false;
 
         public static void SetAPIEndpoint(string endpoint)
@@ -26,6 +27,14 @@ namespace PlayerIOClient
                 PlayerIO.ServerApiEndpoints.Count == 0 ? endpoint :
                 ((PlayerIO.ServerApiSecurity== ServerAPISecurity.UseHttps || (PlayerIO.ServerApiSecurity == ServerAPISecurity.RespectClientSetting && PlayerIO.UseSecureApiRequests)) ?
                 "https://" : "http://") + endpoint + "/api");
+        }
+
+        public static string APIProxy { get; set; }
+
+        public static void SetAPIProxy(string proxy, bool enable = true)
+        {
+            APIProxy = proxy;
+            UseProxyForAPIRequests = enable;
         }
 
         internal static List<string> ServerApiEndpoints = new List<string>();
@@ -111,20 +120,25 @@ namespace PlayerIOClient
         public static Client Authenticate(string gameId, string connectionId, Dictionary<string, string> authenticationArguments = null, string[] playerInsightSegments = null)
         {
             if (authenticationArguments?.ContainsKey("secureSimpleUserPasswordsOverHttp") == true && authenticationArguments["secureSimpleUserPasswordsOverHttp"] == "true") {
-                var identifier = SimpleUserGetSecureLoginInfo();
-                authenticationArguments["password"] = PlayerIO.SimpleUserPasswordEncrypt(identifier.PublicKey, authenticationArguments["password"]);
-                authenticationArguments["nonce"] = identifier.Nonce;
+                var secureLoginInfo = SimpleUserGetSecureLoginInfo();
+                authenticationArguments["password"] = PlayerIO.SimpleUserPasswordEncrypt(secureLoginInfo.PublicKey, authenticationArguments["password"]);
+                authenticationArguments["nonce"] = secureLoginInfo.Nonce;
             }
 
-            var identifier2 = Authenticate(gameId, connectionId, authenticationArguments ?? null, playerInsightSegments?.ToList() ?? null, PlayerIO.GetClientAPI(), PlayerIO.GetClientInfo(), PlayerIO.GetPlayCodes());
+            var authenticationOutput = Authenticate(gameId, connectionId, authenticationArguments ?? null, playerInsightSegments?.ToList() ?? null, GetClientAPI(), GetClientInfo(), GetPlayCodes());
 
-            PlayerIO.ServerApiEndpoints = identifier2.ApiServerHosts;
-            PlayerIO.ServerApiSecurity = identifier2.ApiSecurity;
+            PlayerIO.ServerApiEndpoints = authenticationOutput.ApiServerHosts;
+            PlayerIO.ServerApiSecurity = authenticationOutput.ApiSecurity;
 
-            // TODO: Don't want to overwrite any custom user-set end-point...
+            // TODO: Don't want to overwrite any custom user-set endpoint...
             PlayerIO.SetAPIEndpoint(PlayerIO.ServerApiEndpoints[0]);
 
-            return new Client(Channel, gameId, identifier2.GameFSRedirectMap, identifier2.Token, identifier2.UserId, identifier2.ShowBranding, identifier2.IsSocialNetworkUser, null);
+            return new Client(Channel, gameId,
+                authenticationOutput.GameFSRedirectMap, 
+                authenticationOutput.Token, 
+                authenticationOutput.UserId,
+                authenticationOutput.ShowBranding,
+                authenticationOutput.IsSocialNetworkUser, null);
         }
 
         internal static AuthenticateOutput Authenticate(string gameId, string connectionId, Dictionary<string, string> authenticationArguments, List<string> playerInsightSegments, string clientAPI, Dictionary<string, string> clientInfo, List<string> playCodes)

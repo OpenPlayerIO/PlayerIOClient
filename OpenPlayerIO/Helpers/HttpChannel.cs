@@ -18,7 +18,6 @@ namespace PlayerIOClient.Helpers
         {
             var r = default(TResponse);
             var request = GetRequest(method);
-            //var wc = new WebClient { Proxy = null }; //never used so it's useless
 
             using (var requestStream = request.GetRequestStream()) {
                 Serializer.Serialize(requestStream, args);
@@ -59,18 +58,30 @@ namespace PlayerIOClient.Helpers
 
         private WebRequest GetRequest(int method)
         {
-            var value = WebRequest.Create(EndpointUri + "/" + method);
-            value.Timeout = 15000;
-            value.Method = "POST";
+            var request = WebRequest.Create(EndpointUri + "/" + method);
+            request.Timeout = 15000;
+            request.Method = "POST";
 
-            if (_headers != null) {
-                lock (_headers) {
-                    foreach (var header in _headers) {
-                        value.Headers[header.Key] = header.Value;
+            if (PlayerIO.UseProxyForAPIRequests)
+            {
+                if (!string.IsNullOrEmpty(PlayerIO.APIProxy))
+                {
+                    request.Proxy = new WebProxy(PlayerIO.APIProxy);
+                }
+            }
+
+            if (_headers != null)
+            {
+                lock (_headers)
+                {
+                    foreach (var header in _headers)
+                    {
+                        request.Headers[header.Key] = header.Value;
                     }
                 }
             }
-            return value;
+
+            return request;
         }
 
         private bool ReadHeader(Stream responseStream)

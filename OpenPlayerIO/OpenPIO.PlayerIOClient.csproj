@@ -99,6 +99,7 @@
     <Content Include="ILMerge.exe">
       <visible>false</visible>
     </Content>
+    <Content Include="ILMergeOrder.txt" />
     <Content Include="Messages\Unimplemented\Achievement.cs" />
     <Content Include="Messages\Unimplemented\AchievementsLoadArgs.cs" />
     <Content Include="Messages\Unimplemented\AchievementsLoadOutput.cs" />
