@@ -24,8 +24,8 @@ namespace PlayerIOClient
         public static void SetAPIEndpoint(string endpoint)
         {
             Channel.SetEndpoint(
-                PlayerIO.ServerApiEndpoints.Count == 0 ? endpoint :
-                ((PlayerIO.ServerApiSecurity== ServerAPISecurity.UseHttps || (PlayerIO.ServerApiSecurity == ServerAPISecurity.RespectClientSetting && PlayerIO.UseSecureApiRequests)) ?
+                ServerApiEndpoints.Count == 0 ? endpoint :
+                ((ServerApiSecurity == ServerAPISecurity.UseHttps || (ServerApiSecurity == ServerAPISecurity.RespectClientSetting && UseSecureApiRequests)) ?
                 "https://" : "http://") + endpoint + "/api");
         }
 
@@ -62,6 +62,7 @@ namespace PlayerIOClient
                 UserId = userId,
                 Auth = auth
             };
+
             var connectOutput = Channel.Request<ConnectArgs, ConnectOutput, PlayerIOError>(10, connectArg);
             return new Client(Channel, connectOutput.Token, connectOutput.UserId);
         }
@@ -112,11 +113,11 @@ namespace PlayerIOClient
             }
         }
 
-        /// <summary>Connects to Player.IO using as the given user</summary>
-        /// <param name="gameId">The game id of the game you wish to connect to. This value can be found in the admin panel</param>
-        /// <param name="connectionId">The id of the connection, as given in the settings section of the admin panel. 'public' should be used as the default</param>
-        /// <param name="authenticationArguments">A dictionary of arguments for the given connection.</param>
-        /// <param name="playerInsightSegments">Custom segments for the user in PlayerInsight.</param>
+        /// <summary> Connects to Player.IO using as the given user </summary>
+        /// <param name="gameId"> The game ID of the game you wish to connect to. This value can be found in the admin panel </param>
+        /// <param name="connectionId"> The ID of the connection, as given in the settings section of the admin panel. 'public' should be used as the default </param>
+        /// <param name="authenticationArguments"> A dictionary of arguments for the given connection. </param>
+        /// <param name="playerInsightSegments"> Custom segments for the user in PlayerInsight. </param>
         public static Client Authenticate(string gameId, string connectionId, Dictionary<string, string> authenticationArguments = null, string[] playerInsightSegments = null)
         {
             if (authenticationArguments?.ContainsKey("secureSimpleUserPasswordsOverHttp") == true && authenticationArguments["secureSimpleUserPasswordsOverHttp"] == "true") {
@@ -139,6 +140,36 @@ namespace PlayerIOClient
                 authenticationOutput.UserId,
                 authenticationOutput.ShowBranding,
                 authenticationOutput.IsSocialNetworkUser, null);
+        }
+
+        public static void Authenticate(string gameId, string connectionId, Dictionary<string, string> authenticationArguments = null, string[] playerInsightSegments = null, Callback<Client> successCallback = null, Callback<PlayerIOError> errorCallback = null)
+        {
+            var authenticationOutput = Channel.Request<AuthenticateArgs, AuthenticateOutput, PlayerIOError>(13, new AuthenticateArgs
+            {
+                GameId = gameId,
+                ConnectionId = connectionId,
+                AuthenticationArguments = Converter.Convert(authenticationArguments ?? new Dictionary<string, string>()),
+                PlayerInsightSegments = playerInsightSegments.ToList() ?? new List<string>(),
+                ClientAPI = GetClientAPI(),
+                ClientInfo = Converter.Convert(GetClientInfo()),
+                PlayCodes = GetPlayCodes()
+            }, errorCallback);
+
+            if (authenticationOutput != null)
+            {
+                PlayerIO.ServerApiEndpoints = authenticationOutput.ApiServerHosts;
+                PlayerIO.ServerApiSecurity = authenticationOutput.ApiSecurity;
+
+                // TODO: Don't want to overwrite any custom user-set endpoint...
+                PlayerIO.SetAPIEndpoint(PlayerIO.ServerApiEndpoints[0]);
+
+                successCallback(new Client(Channel, gameId,
+                    authenticationOutput.GameFSRedirectMap,
+                    authenticationOutput.Token,
+                    authenticationOutput.UserId,
+                    authenticationOutput.ShowBranding,
+                    authenticationOutput.IsSocialNetworkUser, null));
+            }
         }
 
         internal static AuthenticateOutput Authenticate(string gameId, string connectionId, Dictionary<string, string> authenticationArguments, List<string> playerInsightSegments, string clientAPI, Dictionary<string, string> clientInfo, List<string> playCodes)
