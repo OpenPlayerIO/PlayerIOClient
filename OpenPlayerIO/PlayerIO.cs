@@ -142,6 +142,13 @@ namespace PlayerIOClient
                 authenticationOutput.IsSocialNetworkUser, null);
         }
 
+        /// <summary> Connects to Player.IO using as the given user </summary>
+        /// <param name="gameId"> The game ID of the game you wish to connect to. This value can be found in the admin panel </param>
+        /// <param name="connectionId"> The ID of the connection, as given in the settings section of the admin panel. 'public' should be used as the default </param>
+        /// <param name="authenticationArguments"> A dictionary of arguments for the given connection. </param>
+        /// <param name="playerInsightSegments"> Custom segments for the user in PlayerInsight. </param>
+        /// <param name="successCallback"> A callback called when successfully connected. </param>
+        /// <param name="errorCallback"> A callback called instead of <paramref name="successCallback"/> when an error occurs during connection. </param>
         public static void Authenticate(string gameId, string connectionId, Dictionary<string, string> authenticationArguments = null, string[] playerInsightSegments = null, Callback<Client> successCallback = null, Callback<PlayerIOError> errorCallback = null)
         {
             var authenticationOutput = Channel.Request<AuthenticateArgs, AuthenticateOutput, PlayerIOError>(13, new AuthenticateArgs
