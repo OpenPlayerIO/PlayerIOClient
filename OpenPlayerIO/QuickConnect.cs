@@ -262,15 +262,51 @@ namespace PlayerIOClient
             });
         }
 
+        /// <summary>
+        /// Changes the email address of the specified user using the username provided.
+        /// </summary>
+        /// <param name="connectionId"> For example, 'simpleUsers' </param>
+        /// <param name="currentUsername"> The username of the user </param>
+        /// <param name="currentPassword"> The password of the user </param>
+        /// <param name="newEmail"> The new email address for the user </param>
+        /// <param name="requestResponseMessage"> The response received from Player.IO </param>
+        /// <returns> Whether the email address has been successfully changed. </returns>
         public bool SimpleChangeEmailByUsername(string gameId, string connectionId, string currentUsername, string currentPassword, string newEmail, out string requestResponseMessage) =>
             this.SimpleChangeEmail(gameId, connectionId, "username", currentUsername, currentPassword, newEmail, out requestResponseMessage);
 
+        /// <summary>
+        /// Changes the email address of the specified user using the email address provided.
+        /// </summary>
+        /// <param name="connectionId"> For example, 'simpleUsers' </param>
+        /// <param name="currentEmail"> The email of the user </param>
+        /// <param name="currentPassword"> The password of the user </param>
+        /// <param name="newEmail"> The new email address for the user </param>
+        /// <param name="requestResponseMessage"> The response received from Player.IO </param>
+        /// <returns> Whether the email address has been successfully changed. </returns>
         public bool SimpleChangeEmailByEmail(string gameId, string connectionId, string currentEmail, string currentPassword, string newEmail, out string requestResponseMessage) =>
             this.SimpleChangeEmail(gameId, connectionId, "email", currentEmail, currentPassword, newEmail, out requestResponseMessage);
 
+        /// <summary>
+        /// Changes the password of the specified user using the username provided.
+        /// </summary>
+        /// <param name="connectionId"> For example, 'simpleUsers' </param>
+        /// <param name="currentUsername"> The username of the user </param>
+        /// <param name="currentPassword"> The password of the user </param>
+        /// <param name="newPassword"> The new password for the user </param>
+        /// <param name="requestResponseMessage"> The response received from Player.IO </param>
+        /// <returns> Whether the password has been successfully changed. </returns>
         public bool SimpleChangePasswordByUsername(string gameId, string connectionId, string currentUsername, string currentPassword, string newPassword, out string requestResponseMessage) =>
             this.SimpleChangePassword(gameId, connectionId, "username", currentUsername, currentPassword, newPassword, out requestResponseMessage);
 
+        /// <summary>
+        /// Changes the password of the specified user using the email address provided.
+        /// </summary>
+        /// <param name="connectionId"> For example, 'simpleUsers' </param>
+        /// <param name="currentEmail"> The email of the user </param>
+        /// <param name="currentPassword"> The password of the user </param>
+        /// <param name="newPassword"> The new password for the user </param>
+        /// <param name="requestResponseMessage"> The response received from Player.IO </param>
+        /// <returns> Whether the password has been successfully changed. </returns>
         public bool SimpleChangePasswordByEmail(string gameId, string connectionId, string currentEmail, string currentPassword, string newPassword, out string requestResponseMessage) =>
             this.SimpleChangePassword(gameId, connectionId, "email", currentEmail, currentPassword, newPassword, out requestResponseMessage);
 
