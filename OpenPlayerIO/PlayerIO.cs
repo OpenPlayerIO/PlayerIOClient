@@ -156,7 +156,7 @@ namespace PlayerIOClient
                 GameId = gameId,
                 ConnectionId = connectionId,
                 AuthenticationArguments = Converter.Convert(authenticationArguments ?? new Dictionary<string, string>()),
-                PlayerInsightSegments = playerInsightSegments.ToList() ?? new List<string>(),
+                PlayerInsightSegments = playerInsightSegments?.ToList() ?? new List<string>(),
                 ClientAPI = GetClientAPI(),
                 ClientInfo = Converter.Convert(GetClientInfo()),
                 PlayCodes = GetPlayCodes()
