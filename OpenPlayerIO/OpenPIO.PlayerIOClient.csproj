@@ -1,283 +1,205 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.props" Condition="Exists('..\packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E7921130-0056-4267-BF63-F7CCA56705AE}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenPIO.PlayerIOClient</RootNamespace>
-    <AssemblyName>OpenPIO.PlayerIOClient</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AssemblyVersion>1.3.2.2</AssemblyVersion>
+    <FileVersion>1.3.2.2</FileVersion>
+    <Copyright>Copyright © OpenPIO 2018</Copyright>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.2-beta1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="protobuf-net, Version=2.0.0.621, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
-      <HintPath>..\packages\protobuf-net.2.0.0.621\lib\net40\protobuf-net.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Compile Remove="Messages\Unimplemented\Achievement.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsLoadArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsLoadOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsProgressAddArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsProgressAddOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsProgressCompleteArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsProgressCompleteOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsProgressMaxArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsProgressMaxOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsProgressSetArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsProgressSetOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsRefreshArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\AchievementsRefreshOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\BigDBChangeset.cs" />
+    <Compile Remove="Messages\Unimplemented\CreateTestAccountArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\CreateTestAccountOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\FlushEventReducersArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\FlushEventReducersOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\GameRequestsDeleteArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\GameRequestsDeleteOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\GameRequestsRefreshArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\GameRequestsRefreshOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\GameRequestsSendArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\GameRequestsSendOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\LoadMatchingObjectsArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\LoadMatchingObjectsOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\Notification.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsDeleteEndpointsArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsDeleteEndpointsOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsEndpoint.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsEndpointId.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsRefreshArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsRefreshOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsRegisterEndpointsArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsRegisterEndpointsOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsSendArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsSendOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsToggleEndpointsArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\NotificationsToggleEndpointsOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\OneScoreAddArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\OneScoreAddOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\OneScoreLoadArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\OneScoreLoadOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\OneScoreRefreshArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\OneScoreRefreshOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\OneScoreSetArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\OneScoreSetOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\OneScoreValue.cs" />
+    <Compile Remove="Messages\Unimplemented\PartnerPaySetTagArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\PartnerPaySetTagOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\PartnerPayTriggerArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\PartnerPayTriggerOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\PayVaultUsePaymentInfoArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\PayVaultUsePaymentInfoOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightEvent.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightRefreshArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightRefreshOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightSessionKeepAliveArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightSessionKeepAliveOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightSessionStopArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightSessionStopOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightSetSegmentsArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightSetSegmentsOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightState.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightTrackEventsArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightTrackEventsOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightTrackExternalPaymentArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightTrackExternalPaymentOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightTrackInvitedByArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\PlayerInsightTrackInvitedByOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\RemoveTestAccountsArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\RemoveTestAccountsOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\SaveObjectChangesArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\SaveObjectChangesOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\SocialLoadProfilesArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\SocialLoadProfilesOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\SocialProfile.cs" />
+    <Compile Remove="Messages\Unimplemented\SocialRefreshArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\SocialRefreshOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\TestNotification.cs" />
+    <Compile Remove="Messages\Unimplemented\TestNotificationReadSentArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\TestNotificationReadSentOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\TestNotificationRegisteredEndpoint.cs" />
+    <Compile Remove="Messages\Unimplemented\UsePayVaultTestInfoArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\UsePayVaultTestInfoOutput.cs" />
+    <Compile Remove="Messages\Unimplemented\UserAchievements.cs" />
+    <Compile Remove="Messages\Unimplemented\WaitingGameRequest.cs" />
+    <Compile Remove="Messages\Unimplemented\WriteSystemErrorArgs.cs" />
+    <Compile Remove="Messages\Unimplemented\WriteSystemErrorOutput.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="BigDB.cs" />
-    <Compile Include="Client.cs" />
-    <Compile Include="Connection.cs" />
-    <Compile Include="DatabaseObject.cs" />
-    <Compile Include="Enums\ObjectType.cs" />
-    <Compile Include="Enums\MessageType.cs" />
-    <Compile Include="Enums\ProtocolType.cs" />
-    <Compile Include="Enums\ServerAPISecurity.cs" />
-    <Compile Include="ErrorLog.cs" />
-    <Compile Include="Error\ErrorCode.cs" />
-    <Compile Include="Error\PlayerIOError.cs" />
-    <Compile Include="Error\PlayerIORegistrationError.cs" />
-    <Compile Include="Helpers\BinarySerializer.cs" />
-    <Compile Include="Helpers\BuyItemInfo.cs" />
-    <Compile Include="DatabaseArray.cs" />
-    <Compile Include="Helpers\Callback.cs" />
-    <Compile Include="Helpers\Converter.cs" />
-    <Compile Include="Helpers\DatabaseObject.cs" />
-    <Compile Include="Helpers\HttpChannel.cs" />
-    <Compile Include="Helpers\Message.cs" />
-    <Compile Include="Helpers\BigDBObjectValue.cs" />
-    <Compile Include="Helpers\MultiplayerProxy.cs" />
-    <Compile Include="Helpers\ProxySocket\AuthMethod.cs" />
-    <Compile Include="Helpers\ProxySocket\AuthNone.cs" />
-    <Compile Include="Helpers\ProxySocket\AuthUserPass.cs" />
-    <Compile Include="Helpers\ProxySocket\IAsyncProxyResult.cs" />
-    <Compile Include="Helpers\ProxySocket\ProxyException.cs" />
-    <Compile Include="Helpers\ProxySocket\ProxySocket.cs" />
-    <Compile Include="Helpers\ProxySocket\Socks4Handler.cs" />
-    <Compile Include="Helpers\ProxySocket\Socks5Handler.cs" />
-    <Compile Include="Helpers\ProxySocket\SocksHandler.cs" />
-    <Compile Include="Helpers\RoomInfo.cs" />
-    <Compile Include="Helpers\SentDatabaseObject.cs" />
-    <Compile Include="Helpers\ServerEndpoint.cs" />
-    <Compile Include="Messages\BigDB\BigDBObjectId.cs" />
-    <Compile Include="Messages\BigDB\LoadIndexRangeArgs.cs" />
-    <Compile Include="Messages\BigDB\LoadIndexRangeOutput.cs" />
-    <Compile Include="Messages\BigDB\LoadObjectsError.cs" />
-    <Compile Include="Messages\BigDB\LoadObjectsArgs.cs" />
-    <Compile Include="Messages\BigDB\LoadObjectsOutput.cs" />
-    <Compile Include="Messages\BigDB\LoadMyPlayerObjectOutput.cs" />
-    <Content Include="ILMerge.exe">
-      <visible>false</visible>
-    </Content>
-    <Content Include="ILMergeOrder.txt" />
-    <Content Include="Messages\Unimplemented\Achievement.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsLoadArgs.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsLoadOutput.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsProgressAddArgs.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsProgressAddOutput.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsProgressCompleteArgs.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsProgressCompleteOutput.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsProgressMaxArgs.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsProgressMaxOutput.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsProgressSetArgs.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsProgressSetOutput.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsRefreshArgs.cs" />
-    <Content Include="Messages\Unimplemented\AchievementsRefreshOutput.cs" />
-    <Compile Include="Messages\Client\AuthenticateArgs.cs" />
-    <Compile Include="Messages\Client\AuthenticateOutput.cs" />
-    <Compile Include="Messages\Client\AuthenticateStartDialog.cs" />
-    <Content Include="Messages\Unimplemented\BigDBChangeset.cs" />
-    <Compile Include="Messages\BigDB\BigDBObjectValue.cs" />
-    <Compile Include="Messages\Client\ConnectArgs.cs" />
-    <Compile Include="Messages\Client\ConnectOutput.cs" />
-    <Compile Include="Messages\Client\CreateJoinRoomArgs.cs" />
-    <Compile Include="Messages\Client\CreateJoinRoomOutput.cs" />
-    <Compile Include="Messages\BigDB\CreateObjectsArgs.cs" />
-    <Compile Include="Messages\BigDB\CreateObjectsOutput.cs" />
-    <Compile Include="Messages\Client\CreateRoomArgs.cs" />
-    <Compile Include="Messages\Client\CreateRoomOutput.cs" />
-    <Content Include="Messages\Unimplemented\CreateTestAccountArgs.cs" />
-    <Content Include="Messages\Unimplemented\CreateTestAccountOutput.cs" />
-    <Compile Include="Messages\BigDB\DeleteIndexRangeArgs.cs" />
-    <Compile Include="Messages\BigDB\DeleteIndexRangeOutput.cs" />
-    <Compile Include="Messages\BigDB\DeleteObjectsArgs.cs" />
-    <Compile Include="Messages\BigDB\DeleteObjectsOutput.cs" />
-    <Compile Include="Messages\Client\FacebookOAuthConnectOutput.cs" />
-    <Compile Include="Messages\Client\FacebookOAuthConnectArgs.cs" />
-    <Content Include="Messages\Unimplemented\FlushEventReducersArgs.cs" />
-    <Content Include="Messages\Unimplemented\FlushEventReducersOutput.cs" />
-    <Content Include="Messages\Unimplemented\GameRequestsDeleteArgs.cs" />
-    <Content Include="Messages\Unimplemented\GameRequestsDeleteOutput.cs" />
-    <Content Include="Messages\Unimplemented\GameRequestsRefreshArgs.cs" />
-    <Content Include="Messages\Unimplemented\GameRequestsRefreshOutput.cs" />
-    <Content Include="Messages\Unimplemented\GameRequestsSendArgs.cs" />
-    <Content Include="Messages\Unimplemented\GameRequestsSendOutput.cs" />
-    <Compile Include="Messages\Client\JoinRoomArgs.cs" />
-    <Compile Include="Messages\Client\JoinRoomOutput.cs" />
-    <Compile Include="Messages\Client\KongregateConnectArgs.cs" />
-    <Compile Include="Messages\Client\KongregateConnectOutput.cs" />
-    <Compile Include="Messages\Client\ListRoomsArgs.cs" />
-    <Compile Include="Messages\Client\ListRoomsOutput.cs" />
-    <Content Include="Messages\Unimplemented\LoadMatchingObjectsArgs.cs" />
-    <Content Include="Messages\Unimplemented\LoadMatchingObjectsOutput.cs" />
-    <Content Include="Messages\Unimplemented\Notification.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsDeleteEndpointsArgs.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsDeleteEndpointsOutput.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsEndpoint.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsEndpointId.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsRefreshArgs.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsRefreshOutput.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsRegisterEndpointsArgs.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsRegisterEndpointsOutput.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsSendArgs.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsSendOutput.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsToggleEndpointsArgs.cs" />
-    <Content Include="Messages\Unimplemented\NotificationsToggleEndpointsOutput.cs" />
-    <Content Include="Messages\Unimplemented\OneScoreAddArgs.cs" />
-    <Content Include="Messages\Unimplemented\OneScoreAddOutput.cs" />
-    <Content Include="Messages\Unimplemented\OneScoreLoadArgs.cs" />
-    <Content Include="Messages\Unimplemented\OneScoreLoadOutput.cs" />
-    <Content Include="Messages\Unimplemented\OneScoreRefreshArgs.cs" />
-    <Content Include="Messages\Unimplemented\OneScoreRefreshOutput.cs" />
-    <Content Include="Messages\Unimplemented\OneScoreSetArgs.cs" />
-    <Content Include="Messages\Unimplemented\OneScoreSetOutput.cs" />
-    <Content Include="Messages\Unimplemented\OneScoreValue.cs" />
-    <Content Include="Messages\Unimplemented\PartnerPaySetTagArgs.cs" />
-    <Content Include="Messages\Unimplemented\PartnerPaySetTagOutput.cs" />
-    <Content Include="Messages\Unimplemented\PartnerPayTriggerArgs.cs" />
-    <Content Include="Messages\Unimplemented\PartnerPayTriggerOutput.cs" />
-    <Content Include="Messages\PayVault\PayVaultBuyArgs.cs" />
-    <Compile Include="Messages\PayVault\PayVaultBuyItemInfo.cs" />
-    <Compile Include="Messages\PayVault\PayVaultBuyOutput.cs" />
-    <Compile Include="Messages\PayVault\PayVaultConsumeArgs.cs" />
-    <Compile Include="Messages\PayVault\PayVaultConsumeOutput.cs" />
-    <Compile Include="Messages\PayVault\PayVaultContents.cs" />
-    <Compile Include="Messages\PayVault\PayVaultCreditArgs.cs" />
-    <Compile Include="Messages\PayVault\PayVaultCreditOutput.cs" />
-    <Compile Include="Messages\PayVault\PayVaultDebitArgs.cs" />
-    <Compile Include="Messages\PayVault\PayVaultDebitOutput.cs" />
-    <Compile Include="Messages\PayVault\PayVaultGiveArgs.cs" />
-    <Compile Include="Messages\PayVault\PayVaultGiveOutput.cs" />
-    <Compile Include="Messages\PayVault\PayVaultHistoryEntry.cs" />
-    <Compile Include="Messages\PayVault\PayVaultItem.cs" />
-    <Compile Include="Messages\PayVault\PayVaultPaymentInfoArgs.cs" />
-    <Compile Include="Messages\PayVault\PayVaultPaymentInfoOutput.cs" />
-    <Compile Include="Messages\PayVault\PayVaultReadHistoryArgs.cs" />
-    <Compile Include="Messages\PayVault\PayVaultReadHistoryOutput.cs" />
-    <Compile Include="Messages\PayVault\PayVaultRefreshArgs.cs" />
-    <Compile Include="Messages\PayVault\PayVaultRefreshOutput.cs" />
-    <Content Include="Messages\Unimplemented\PayVaultUsePaymentInfoArgs.cs" />
-    <Content Include="Messages\Unimplemented\PayVaultUsePaymentInfoOutput.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightEvent.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightRefreshArgs.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightRefreshOutput.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightSessionKeepAliveArgs.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightSessionKeepAliveOutput.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightSessionStopArgs.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightSessionStopOutput.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightSetSegmentsArgs.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightSetSegmentsOutput.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightState.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightTrackEventsArgs.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightTrackEventsOutput.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightTrackExternalPaymentArgs.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightTrackExternalPaymentOutput.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightTrackInvitedByArgs.cs" />
-    <Content Include="Messages\Unimplemented\PlayerInsightTrackInvitedByOutput.cs" />
-    <Content Include="Messages\Unimplemented\RemoveTestAccountsArgs.cs" />
-    <Content Include="Messages\Unimplemented\RemoveTestAccountsOutput.cs" />
-    <Content Include="Messages\Unimplemented\SaveObjectChangesArgs.cs" />
-    <Content Include="Messages\Unimplemented\SaveObjectChangesOutput.cs" />
-    <Compile Include="Messages\Client\SimpleConnectArgs.cs" />
-    <Compile Include="Messages\Client\SimpleConnectOutput.cs" />
-    <Compile Include="Messages\Client\SimpleGetCaptchaArgs.cs" />
-    <Compile Include="Messages\Client\SimpleGetCaptchaOutput.cs" />
-    <Compile Include="Messages\Client\SimpleRecoverPasswordArgs.cs" />
-    <Compile Include="Messages\Client\SimpleRegisterArgs.cs" />
-    <Compile Include="Messages\Client\SimpleRegisterOutput.cs" />
-    <Compile Include="Messages\Client\SimpleUserGetSecureLoginInfoArgs.cs" />
-    <Compile Include="Messages\Client\SimpleUserGetSecureLoginInfoOutput.cs" />
-    <Content Include="Messages\Unimplemented\SocialLoadProfilesArgs.cs" />
-    <Content Include="Messages\Unimplemented\SocialLoadProfilesOutput.cs" />
-    <Content Include="Messages\Unimplemented\SocialProfile.cs" />
-    <Content Include="Messages\Unimplemented\SocialRefreshArgs.cs" />
-    <Content Include="Messages\Unimplemented\SocialRefreshOutput.cs" />
-    <Compile Include="Messages\Client\SteamConnectOutput.cs" />
-    <Compile Include="Messages\Client\SteamConnectArgs.cs" />
-    <Content Include="Messages\Unimplemented\TestNotification.cs" />
-    <Content Include="Messages\Unimplemented\TestNotificationReadSentArgs.cs" />
-    <Content Include="Messages\Unimplemented\TestNotificationReadSentOutput.cs" />
-    <Content Include="Messages\Unimplemented\TestNotificationRegisteredEndpoint.cs" />
-    <Content Include="Messages\Unimplemented\UsePayVaultTestInfoArgs.cs" />
-    <Content Include="Messages\Unimplemented\UsePayVaultTestInfoOutput.cs" />
-    <Content Include="Messages\Unimplemented\UserAchievements.cs" />
-    <Content Include="Messages\Unimplemented\WaitingGameRequest.cs" />
-    <Compile Include="Messages\ErrorLog\WriteErrorArgs.cs" />
-    <Compile Include="Messages\ErrorLog\WriteErrorOutput.cs" />
-    <Content Include="Messages\Unimplemented\WriteSystemErrorArgs.cs" />
-    <Content Include="Messages\Unimplemented\WriteSystemErrorOutput.cs" />
-    <Compile Include="Messages\Error\Error.cs" />
-    <Compile Include="Messages\Error\RegistrationError.cs" />
-    <Compile Include="Messages\KeyValuePair.cs" />
-    <Compile Include="Messages\NoArgsOrOutput.cs" />
-    <Compile Include="Messages\ServerEndpoint.cs" />
-    <Compile Include="Multiplayer.cs" />
-    <Compile Include="PayVault.cs" />
-    <Compile Include="PlayerIO.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuickConnect.cs" />
+    <None Include="Messages\Unimplemented\Achievement.cs" />
+    <None Include="Messages\Unimplemented\AchievementsLoadArgs.cs" />
+    <None Include="Messages\Unimplemented\AchievementsLoadOutput.cs" />
+    <None Include="Messages\Unimplemented\AchievementsProgressAddArgs.cs" />
+    <None Include="Messages\Unimplemented\AchievementsProgressAddOutput.cs" />
+    <None Include="Messages\Unimplemented\AchievementsProgressCompleteArgs.cs" />
+    <None Include="Messages\Unimplemented\AchievementsProgressCompleteOutput.cs" />
+    <None Include="Messages\Unimplemented\AchievementsProgressMaxArgs.cs" />
+    <None Include="Messages\Unimplemented\AchievementsProgressMaxOutput.cs" />
+    <None Include="Messages\Unimplemented\AchievementsProgressSetArgs.cs" />
+    <None Include="Messages\Unimplemented\AchievementsProgressSetOutput.cs" />
+    <None Include="Messages\Unimplemented\AchievementsRefreshArgs.cs" />
+    <None Include="Messages\Unimplemented\AchievementsRefreshOutput.cs" />
+    <None Include="Messages\Unimplemented\BigDBChangeset.cs" />
+    <None Include="Messages\Unimplemented\CreateTestAccountArgs.cs" />
+    <None Include="Messages\Unimplemented\CreateTestAccountOutput.cs" />
+    <None Include="Messages\Unimplemented\FlushEventReducersArgs.cs" />
+    <None Include="Messages\Unimplemented\FlushEventReducersOutput.cs" />
+    <None Include="Messages\Unimplemented\GameRequestsDeleteArgs.cs" />
+    <None Include="Messages\Unimplemented\GameRequestsDeleteOutput.cs" />
+    <None Include="Messages\Unimplemented\GameRequestsRefreshArgs.cs" />
+    <None Include="Messages\Unimplemented\GameRequestsRefreshOutput.cs" />
+    <None Include="Messages\Unimplemented\GameRequestsSendArgs.cs" />
+    <None Include="Messages\Unimplemented\GameRequestsSendOutput.cs" />
+    <None Include="Messages\Unimplemented\LoadMatchingObjectsArgs.cs" />
+    <None Include="Messages\Unimplemented\LoadMatchingObjectsOutput.cs" />
+    <None Include="Messages\Unimplemented\Notification.cs" />
+    <None Include="Messages\Unimplemented\NotificationsDeleteEndpointsArgs.cs" />
+    <None Include="Messages\Unimplemented\NotificationsDeleteEndpointsOutput.cs" />
+    <None Include="Messages\Unimplemented\NotificationsEndpoint.cs" />
+    <None Include="Messages\Unimplemented\NotificationsEndpointId.cs" />
+    <None Include="Messages\Unimplemented\NotificationsRefreshArgs.cs" />
+    <None Include="Messages\Unimplemented\NotificationsRefreshOutput.cs" />
+    <None Include="Messages\Unimplemented\NotificationsRegisterEndpointsArgs.cs" />
+    <None Include="Messages\Unimplemented\NotificationsRegisterEndpointsOutput.cs" />
+    <None Include="Messages\Unimplemented\NotificationsSendArgs.cs" />
+    <None Include="Messages\Unimplemented\NotificationsSendOutput.cs" />
+    <None Include="Messages\Unimplemented\NotificationsToggleEndpointsArgs.cs" />
+    <None Include="Messages\Unimplemented\NotificationsToggleEndpointsOutput.cs" />
+    <None Include="Messages\Unimplemented\OneScoreAddArgs.cs" />
+    <None Include="Messages\Unimplemented\OneScoreAddOutput.cs" />
+    <None Include="Messages\Unimplemented\OneScoreLoadArgs.cs" />
+    <None Include="Messages\Unimplemented\OneScoreLoadOutput.cs" />
+    <None Include="Messages\Unimplemented\OneScoreRefreshArgs.cs" />
+    <None Include="Messages\Unimplemented\OneScoreRefreshOutput.cs" />
+    <None Include="Messages\Unimplemented\OneScoreSetArgs.cs" />
+    <None Include="Messages\Unimplemented\OneScoreSetOutput.cs" />
+    <None Include="Messages\Unimplemented\OneScoreValue.cs" />
+    <None Include="Messages\Unimplemented\PartnerPaySetTagArgs.cs" />
+    <None Include="Messages\Unimplemented\PartnerPaySetTagOutput.cs" />
+    <None Include="Messages\Unimplemented\PartnerPayTriggerArgs.cs" />
+    <None Include="Messages\Unimplemented\PartnerPayTriggerOutput.cs" />
+    <None Include="Messages\Unimplemented\PayVaultUsePaymentInfoArgs.cs" />
+    <None Include="Messages\Unimplemented\PayVaultUsePaymentInfoOutput.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightEvent.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightRefreshArgs.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightRefreshOutput.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightSessionKeepAliveArgs.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightSessionKeepAliveOutput.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightSessionStopArgs.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightSessionStopOutput.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightSetSegmentsArgs.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightSetSegmentsOutput.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightState.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightTrackEventsArgs.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightTrackEventsOutput.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightTrackExternalPaymentArgs.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightTrackExternalPaymentOutput.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightTrackInvitedByArgs.cs" />
+    <None Include="Messages\Unimplemented\PlayerInsightTrackInvitedByOutput.cs" />
+    <None Include="Messages\Unimplemented\RemoveTestAccountsArgs.cs" />
+    <None Include="Messages\Unimplemented\RemoveTestAccountsOutput.cs" />
+    <None Include="Messages\Unimplemented\SaveObjectChangesArgs.cs" />
+    <None Include="Messages\Unimplemented\SaveObjectChangesOutput.cs" />
+    <None Include="Messages\Unimplemented\SocialLoadProfilesArgs.cs" />
+    <None Include="Messages\Unimplemented\SocialLoadProfilesOutput.cs" />
+    <None Include="Messages\Unimplemented\SocialProfile.cs" />
+    <None Include="Messages\Unimplemented\SocialRefreshArgs.cs" />
+    <None Include="Messages\Unimplemented\SocialRefreshOutput.cs" />
+    <None Include="Messages\Unimplemented\TestNotification.cs" />
+    <None Include="Messages\Unimplemented\TestNotificationReadSentArgs.cs" />
+    <None Include="Messages\Unimplemented\TestNotificationReadSentOutput.cs" />
+    <None Include="Messages\Unimplemented\TestNotificationRegisteredEndpoint.cs" />
+    <None Include="Messages\Unimplemented\UsePayVaultTestInfoArgs.cs" />
+    <None Include="Messages\Unimplemented\UsePayVaultTestInfoOutput.cs" />
+    <None Include="Messages\Unimplemented\UserAchievements.cs" />
+    <None Include="Messages\Unimplemented\WaitingGameRequest.cs" />
+    <None Include="Messages\Unimplemented\WriteSystemErrorArgs.cs" />
+    <None Include="Messages\Unimplemented\WriteSystemErrorOutput.cs" />
   </ItemGroup>
-  <ItemGroup />
+
   <ItemGroup>
-    <None Include="packages.config">
-      <visible>false</visible>
-    </None>
-    <None Include="packages.config" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="protobuf-net" Version="2.4.4" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.props'))" />
-    <Error Condition="!Exists('..\packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.targets'))" />
-  </Target>
-  <Import Project="..\packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.targets" Condition="Exists('..\packages\MSBuild.ILMerge.Task.1.0.5\build\MSBuild.ILMerge.Task.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-</Project>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  
+ </Project>
