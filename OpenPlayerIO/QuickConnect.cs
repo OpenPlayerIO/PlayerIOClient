@@ -313,90 +313,70 @@ namespace PlayerIOClient
         #region Authenticate
         internal bool SimpleChangePassword(string gameId, string connectionId, string connectionType, string currentUsernameOrEmail, string currentPassword, string newPassword, out string requestResponse)
         {
-            var requestFinished = false;
-            var changeSuccessful = false;
-            var playerIOError = default(PlayerIOError);
-
-            _channel.Request<AuthenticateArgs, NoArgsOrOutput, PlayerIOError>(13, new AuthenticateArgs
+            using (var mre = new ManualResetEvent(false))
             {
-                GameId = gameId,
-                ClientAPI = PlayerIO.GetClientAPI(),
-                ConnectionId = connectionId,
-                AuthenticationArguments = new KeyValuePair[] {
+                var changeSuccessful = false;
+                var playerIOError = default(PlayerIOError);
+
+                _channel.Request<AuthenticateArgs, NoArgsOrOutput, PlayerIOError>(13, new AuthenticateArgs {
+                    GameId = gameId,
+                    ClientAPI = PlayerIO.GetClientAPI(),
+                    ConnectionId = connectionId,
+                    AuthenticationArguments = new KeyValuePair[] {
                     new KeyValuePair() { Key = connectionType, Value = currentUsernameOrEmail },
                     new KeyValuePair() { Key = "password", Value = currentPassword },
                     new KeyValuePair() { Key = "changepassword", Value = "true" },
                     new KeyValuePair() { Key = "newpassword", Value = newPassword }
                 }
-            }, new Callback<PlayerIOError>((error) => {
-                if (error.ErrorCode == ErrorCode.GeneralError && error.Message.ToLower().Contains("email address changed"))
-                    changeSuccessful = true;
+                }, new Callback<PlayerIOError>((error) => {
+                    if (error.ErrorCode == ErrorCode.GeneralError && error.Message.ToLower().Contains("email address changed"))
+                        changeSuccessful = true;
 
-                playerIOError = error;
-                requestFinished = true;
-            }));
+                    playerIOError = error;
+                    mre.Set();
+                }));
 
-            // this is really sloppy and could be improved, but it's quick and easy...
-            // and the same description would generally apply to Player.IO as a whole :wink:
-            // - atillabyte
+                requestResponse = playerIOError?.Message ?? "";
 
-            requestResponse = playerIOError?.Message ?? "";
+                if (!mre.WaitOne(TimeSpan.FromMilliseconds(10_000)))
+                    throw new Exception("The email change request timed out without returning a response.");
 
-            var requestTimeout = 0;
-            while (!requestFinished && ++requestTimeout <= 10000 / 100)
-                Thread.Sleep(100);
-
-            if (!requestFinished)
-                throw new Exception("The email change request timed out without returning a response.");
-
-            if (requestFinished && changeSuccessful)
-                return true;
-
-            return false;
+                return changeSuccessful;
+            }
         }
 
         internal bool SimpleChangeEmail(string gameId, string connectionId, string connectionType, string currentUsernameOrEmail, string currentPassword, string newEmail, out string requestResponse)
         {
-            var requestFinished = false;
-            var changeSuccessful = false;
-            var playerIOError = default(PlayerIOError);
-
-            _channel.Request<AuthenticateArgs, NoArgsOrOutput, PlayerIOError>(13, new AuthenticateArgs
+            using (var mre = new ManualResetEvent(false))
             {
-                GameId = gameId,
-                ClientAPI = PlayerIO.GetClientAPI(),
-                ConnectionId = connectionId,
-                AuthenticationArguments = new KeyValuePair[] {
+                var changeSuccessful = false;
+                var playerIOError = default(PlayerIOError);
+
+                _channel.Request<AuthenticateArgs, NoArgsOrOutput, PlayerIOError>(13, new AuthenticateArgs {
+                    GameId = gameId,
+                    ClientAPI = PlayerIO.GetClientAPI(),
+                    ConnectionId = connectionId,
+                    AuthenticationArguments = new KeyValuePair[] {
                     new KeyValuePair() { Key = connectionType, Value = currentUsernameOrEmail },
                     new KeyValuePair() { Key = "password", Value = currentPassword },
                     new KeyValuePair() { Key = "changeemail", Value = "true" },
                     new KeyValuePair() { Key = "newemail", Value = newEmail }
                 }
-            }, new Callback<PlayerIOError>((error) => {
-                if (error.ErrorCode == ErrorCode.GeneralError && error.Message.ToLower().Contains("email address changed"))
-                    changeSuccessful = true;
-                
-                playerIOError = error;
-                requestFinished = true;
-            }));
+                }, new Callback<PlayerIOError>((error) => {
+                    if (error.ErrorCode == ErrorCode.GeneralError && error.Message.ToLower().Contains("email address changed"))
+                        changeSuccessful = true;
 
-            // this is really sloppy and could be improved, but it's quick and easy...
-            // and the same description would generally apply to Player.IO as a whole :wink:
-            // - atillabyte
+                    playerIOError = error;
+                    mre.Set();
+                }));
 
-            requestResponse = playerIOError?.Message ?? "";
+                requestResponse = playerIOError?.Message ?? "";
 
-            var requestTimeout = 0;
-            while (!requestFinished && ++requestTimeout <= 10000/100)
-                Thread.Sleep(100);
+                if (!mre.WaitOne(TimeSpan.FromMilliseconds(10_000)))
+                    throw new Exception("The email change request timed out without returning a response.");
 
-            if (!requestFinished)
-                throw new Exception("The email change request timed out without returning a response.");
-
-            if (requestFinished && changeSuccessful)
-                return true;
-
-            return false;
+                return changeSuccessful;
+            }
         }
 
         #endregion
