@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -38,6 +38,8 @@ namespace PlayerIOClient
         private readonly byte[] _buffer = new byte[65536];
         private readonly string _joinKey;
 
+        private bool _streamDisposed;
+
         /// <summary> Send a message to the connected client. </summary>
         /// <param name="message"> The message to send. </param>
         public void Send(Message message) => _socket.Send(_serializer.Serialize(message));
@@ -71,6 +73,7 @@ namespace PlayerIOClient
             _socket.Connect(endpoint.Address, endpoint.Port);
 
             _stream = new NetworkStream(_socket);
+            _streamDisposed = false;
 
             _serializer = new BinarySerializer();
             _deserializer = new BinaryDeserializer();
@@ -93,6 +96,8 @@ namespace PlayerIOClient
 
         private void ReceiveCallback(IAsyncResult ar)
         {
+            if (_streamDisposed) return;
+
             var length = _stream.EndRead(ar);
             var received = _buffer.Take(length).ToArray();
 
@@ -100,11 +105,14 @@ namespace PlayerIOClient
                 Terminate(new Exception("Connection unexpectedly terminated. (receivedBytes == 0)"));
 
             _deserializer.AddBytes(received);
+
+            if (_streamDisposed) return;
             _stream.BeginRead(_buffer, 0, _buffer.Length, new AsyncCallback(this.ReceiveCallback), null);
         }
 
         private void Terminate(Exception exception)
         {
+            _streamDisposed = true;
             _stream.Close();
             _socket.Disconnect(false);
             _socket.Close();
